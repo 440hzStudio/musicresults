@@ -1,0 +1,34 @@
+{% extends "background.html" %}
+{% block body %}
+<h1>{{contest_name}} - {{contest_area}}</h1>
+<br/><br/>
+<div id='original'>
+    <table class="table table-hover table-sort ">
+        <thead> 
+            <tr>
+                <th class="header">年份</th>
+                <th class="header">指定曲</th>
+                <th class="header">冠軍</th>
+            </tr>
+        </thead>
+        <tbody class="list">
+            {% for contest in contests %}
+            <tr class="clickable-row" data-href="{{contest.url}}">
+                <td class="contest-year">{{contest.year}}</td>
+                <td class="contest-test-pieces">
+                    {% for piece in contest.test_pieces %}
+                    - {{piece.name}} <br/>
+                    {% endfor %}
+                </td>
+                <td class="contest-champion">{{contest.champion}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block js %}
+{% include 'elements/clickable-row.html' %}
+{% include 'elements/sortable-table.html' %}
+{% endblock %}

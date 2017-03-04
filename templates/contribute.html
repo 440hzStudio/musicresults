@@ -1,0 +1,160 @@
+{% extends "background.html" %}
+
+{% block css %}
+<link href="/static/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<h1>新增比賽資料</h1>
+<br/><br/>
+<div id='original'>
+    <form class="form-horizontal" action="/contribute/" method="POST" role="form">
+        <div class="form-group">
+            <label for="contest-name" class="col-sm-2 control-label">比賽名稱</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="contest-name" placeholder="auto-complete">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="contest-prefix" class="col-sm-2 control-label">年度</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="contest-prefix" placeholder="auto-complete">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="contest-date" class="col-sm-2 control-label">日期</label>
+<!--             <div class="col-sm-10">
+                <input type="text" class="form-control" name="contest-date" placeholder="date-picker">
+            </div> -->
+            <div class="col-sm-10">
+                <div class=" input-group date" >
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="contest-date">
+                </div>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label for="contest-testpieces" class="col-sm-2 control-label">指定曲</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="contest-testpieces" placeholder="auto-complete tag">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="contest-venue" class="col-sm-2 control-label">地點</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="contest-venue" placeholder="auto-complete">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="contest-details" class="col-sm-2 control-label">詳細資料</label>
+            <div class="col-sm-10">
+                <table class="table table-hover" id="contest-details">
+                    <thead>
+                        <tr>
+                            <th class="header">樂團</th>
+                            <th class="header">指揮</th>
+                            <th class="header">指定曲</th>
+                            <th class="header">自選曲</th>
+                            <th class="header">分數</th>
+                            <th class="header">等第</th>
+                            <th class="header">演奏順序</th>
+                            <th class="header">備註</th>
+                        </tr>
+                    </thead>
+                    <tbody class="list"></tbody>
+                </table>
+                <a class="btn btn-primary btn-xs" id="add_band">新增樂團</a>
+                <a class="btn btn-default btn-xs" id="del_band">刪除樂團</a>
+            </div>
+        </div>
+        <br>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button value="Send" type="submit" class="btn btn-success btn-lg">送出並新增</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+{% endblock %}
+{% block js %}
+{% include 'elements/date-picker.html' %}
+<script src="/js/bloodhound.min.js"></script>
+<script src="/js/typeahead.bundle.min.js"></script>
+<script src="/js/typeahead.jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    var band_i = 0;
+
+    function add_band() {
+        band_i++;
+        $('#contest-details').append('<tr id="band' + band_i + '"></tr>');
+
+        detail_items = [{{detail_items|safe}}];
+        html = ''
+        for (i = 0; i < detail_items.length; i++){
+            html += '<td><input type="text" class="form-control ' + detail_items[i] + '" name=' + detail_items[i] + '[] placeholder=""></td>';
+        }
+        $('#band' + band_i).html(html);
+    }
+
+    function del_band() {
+        if (band_i > 1) {
+            $("#band" + (band_i)).html('');
+            $("#band" + (band_i)).remove();
+            band_i--;
+        }
+    }
+
+    $("#add_band").click(add_band);
+    $("#del_band").click(del_band);
+
+    add_band();
+});
+
+
+var substringMatcher = function(strs) {
+  return function findMatches(q, cb) {
+    var matches, substringRegex;
+
+    // an array that will be populated with substring matches
+    matches = [];
+
+    // regex used to determine if a string contains the substring `q`
+    substrRegex = new RegExp(q, 'i');
+
+    // iterate through the pool of strings and for any string that
+    // contains the substring `q`, add it to the `matches` array
+    $.each(strs, function(i, str) {
+      if (substrRegex.test(str)) {
+        matches.push(str);
+      }
+    });
+
+    cb(matches);
+  };
+};
+
+var states = ['成功高中', '金頌銅管樂團', '政治大學', 'Arkansas', 'California',
+  'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
+  'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
+  'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+  'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
+  'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
+  'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
+  'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+];
+
+$('.typeahead').typeahead({
+    hint: true,
+    highlight: true,
+    minLength: 1
+},
+{
+    name: 'states',
+    source: substringMatcher(states)
+});
+</script>
+{% endblock %}

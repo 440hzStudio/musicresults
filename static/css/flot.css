@@ -1,0 +1,10 @@
+#flot_chart_tooltip{
+  position: absolute;
+  display: none;
+  border: 1px solid #ddd;
+  padding: 2px;
+  background-color: #158cba;
+  color: white;
+  opacity: 0.80;
+  border-radius: 0.5em;
+}

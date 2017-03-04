@@ -1,0 +1,46 @@
+{% extends "background.html" %}
+{% block body %}
+<h1>樂團列表
+    <div class="btn-group"  style="float: right; width: 25%;">
+        <input type="text" id="filtertext" class="form-control search" placeholder="{{ search_hint }}" required="" >
+        <span id="filterclear" class="glyphicon glyphicon-remove-circle"></span>
+    </div>
+</h1>
+<div style="float: right; text-align: right;" id='shortcut-container'></div>
+<br/><br/>
+<div id='original'>
+    <table class="table table-hover table-sort ">
+        <thead>
+            <tr>
+                <th class="header"></th>
+                <th class="header">團名</th>
+                <th class="header">地區</th>
+                <th class="header">類型</th>
+                <th class="header">比賽記錄</th>
+            </tr>
+        </thead>
+        <tbody class="list">
+            {% for band in bands %}
+            <tr class="clickable-row" data-href="/band/{{band['id']}}">
+                <td class="band-trophy" align="right">
+                    {% for trophy in band['trophies'] %}
+                    <i class="fa fa-trophy text-warning" data-toggle="tooltip" title="現任{{trophy}}冠軍"></i>&nbsp;
+                    {% endfor %}
+                </td>
+                <td class="band-name">{{band['name']}}</td>
+                <td class="band-location">{{band['location']['name']}}</td>
+                <td class="band-type">{{band['band_type']}}</td>
+                <td class="band-record-count">{{band['contest_count']}} 筆</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block js %}
+{% include 'elements/clickable-row.html' %}
+{% include 'elements/tooltip-enabler.html' %}
+{% include 'elements/sortable-table.html' %}
+{% include 'elements/searchable-table.html' %}
+{% endblock %}

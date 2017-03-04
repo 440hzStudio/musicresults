@@ -1,0 +1,63 @@
+body { padding-top: 70px; }
+
+#filterclear {
+    position: absolute;
+    right: 5px;
+    top: 0;
+    bottom: 0;
+    height: 14px;
+    margin: auto;
+    font-size: 14px;
+    cursor: pointer;
+    color: #ccc;
+}
+
+.tag {
+    line-height: inherit;
+    vertical-align: inherit;
+    border: initial;
+}
+
+
+footer {
+    color: #999;
+    font-family: "Droid Sans Mono", monospace;
+    font-size: 80%;
+    margin-top: 40px;
+    padding-bottom: 40px
+}
+footer hr {
+    margin: 10px 0
+}
+
+.fa-trophy {
+    /*color: gold;*/
+}
+
+.breadcrumb {background: rgba(245, 245, 245, 1); border: 0px solid rgba(255, 0, 0, 0); border-radius: 3px; display: block;}
+.breadcrumb li {font-size: 14px;}
+.breadcrumb a {color: rgba(66, 139, 202, 1);}
+.breadcrumb a:hover {color: rgba(42, 100, 150, 1);}
+.breadcrumb>.active {color: rgba(153, 153, 153, 1);}
+.breadcrumb>li+li:before {color: rgba(204, 204, 204, 1);}
+
+.clickable-row {
+    cursor: pointer; cursor: hand;
+}
+
+.table tbody>tr>td{
+    vertical-align: middle;
+}
+
+.band-badge {
+    margin-right: 0.1em;
+    margin-bottom: 0.3em;
+}
+
+.scrolloff {
+   pointer-events: none;
+}
+
+.map-overlay {
+    padding-bottom: 30%;
+}

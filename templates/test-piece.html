@@ -1,0 +1,118 @@
+{% extends "background.html" %}
+{% block body %}
+<h1>{{piece['name']}}</h1>
+<br/>
+<div>
+    <p>作曲者：{{piece.composer.name if piece.composer else ''}}</p>
+    {% if piece.arranger %}
+    <p>編曲者：{{piece.arranger.name}}</p>
+    {% endif %}
+    <p>指定曲次數：{{piece.set_piece_count}} 次</p>
+    <p>自選曲次數：{{piece.own_choice_count}} 次</p>
+    <p>創作年份：{{'{} 年'.format(piece['year']) if piece['year'] else '-'}}</p>
+</div>
+<br/>
+<div>
+    <h3>指定曲記錄</h3>
+    <table class="table table-hover table-sort ">
+        <thead> 
+            <tr>
+                <th class="header">年份</th>
+                <th class="header">比賽</th>
+                <th class="header">組別</th>
+            </tr>
+        </thead>
+        <tbody class="list">
+            {% for row in test_piece_history: %}
+            <tr>
+                <td class="set-piece-year">{{row.date.strftime('%Y')}}</td>
+                <td class="set-piece-contest">{{row.get_fullname(area=False, category=False)}}</td>
+                <td class="set-piece-group">{{row.category}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <h3>自選曲記錄</h3>
+    <table class="table table-hover table-sort ">
+        <thead> 
+            <tr>
+                <th class="header">年份</th>
+                <th class="header">比賽</th>
+                <th class="header">樂團</th>
+                <th class="header">組別</th>
+                <th class="header">名次</th>
+            </tr>
+        </thead>
+        <tbody class="list">
+            {% for row in own_choice_history: %}
+            <tr>
+                <td class="own-choice-year">{{row.contest.date.strftime('%Y')}}</td>
+                <td class="own-choice-contest">{{row.contest.get_fullname(area=False, category=False)}}</td>
+                <td class="own-choice-band">{{row.band.name}}</td>
+                <td class="own-choice-category">{{row.contest.category}}</td>
+                <td class="own-choice-position">{{row.position}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <h3>比賽錄影</h3>
+    <table class="table table-hover table-sort ">
+        <thead> 
+            <tr>
+                <th class="header">樂團</th>
+                <th class="header">指揮</th>
+                <th class="header">年份</th>
+                <th class="header"></th>
+            </tr>
+        </thead>
+        <tbody class="list">
+            {% for row in recordings: %}
+            <tr>
+                <td class="recording-band">{{row.band.name}}</td>
+                <td class="recording-conductor">{{row.conductor.name}}</td>
+                <td class="recording-year">{{row.contest.date.strftime('%Y')}}</td>
+                <td class="recording-link"><button type="button" class="video-trigger btn btn-primary btn-xs" data-toggle="modal" data-target=".bs-example-modal-lg" src="https://www.youtube.com/embed/{{row.set_piece_recording if row.set_piece_recording else row.own_choice_recording}}"><i class="fa fa-youtube-play"></i> 比賽錄影</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div id='video-modal' class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 id='video-title' class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe id='video-player' class="embed-responsive-item" src=""></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".video-trigger").click(function() {
+            $('#video-player').attr('src', $(this).attr('src'));
+            $('#video-title').text($(this).parent().siblings('.recording-band').html() + ' / ' + $(this).parent().siblings('.recording-conductor').html() + ' (' + $(this).parent().siblings('.recording-year').html() + ')');
+        });
+        $('#video-modal').on('hidden.bs.modal', function () {
+            $('#video-player').attr('src', '');
+        })
+    });
+</script>
+{% include 'elements/clickable-row.html' %}
+{% include 'elements/sortable-table.html' %}
+{% endblock %}

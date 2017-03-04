@@ -1,0 +1,156 @@
+{% extends "background.html" %}
+
+{% block css %}
+<link href="/static/css/flot.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<h1>{{band.name}}</h1>
+{% if band.description: %}
+<div>
+    {% for p in band.description.split('\n'): %}
+    <p>{{p}}</p>
+    {% endfor %}
+</div>
+{% endif %}
+<div>
+    {% if band.trophies %}
+    {% for trophy in band.trophies %}
+    <span class="btn btn-warning btn-default band-badge"><i class="fa fa-trophy"></i> 現任{{trophy}}冠軍</span>
+    {% endfor %}
+    {% endif %}
+    <span class="btn btn-primary btn-default band-badge"><i class="fa fa-map"></i> {{band.location.name}}</span>
+    <span class="btn btn-primary btn-default band-badge"><i class="fa fa-group"></i> {{band.band_type}}</span>
+    {% if band['website'] %}
+    <a href="{{band.website}}" target="_blank"><span class="btn btn-success btn-default band-badge"><i class="fa fa-globe"></i> 官方網站</span></a>
+    {% endif %}
+    {% if band['facebook'] %}
+    <a href="https://www.facebook.com/{{band['facebook']}}" target="_blank"><span class="btn btn-success btn-default band-badge"><i class="fa fa-facebook-official"></i> Facebook 粉絲頁</span></a>
+    {% endif %}
+</div>
+
+<h3>歷年比賽記錄</h3>
+<div>
+    <div id="placeholder" style="width:100%; height:200px;"></div>
+</div>
+<br>
+<div id='original'>
+    <table class="table table-hover table-sort ">
+        <thead>
+            <tr>
+                <th class="header">日期</th>
+                <th class="header">比賽</th>
+                <th class="header">分數</th>
+                <th class="header">等地</th>
+                <th class="header">名次</th>
+                <th class="header">指揮</th>
+            </tr>
+        </thead>
+        <tbody class="list">
+            {% for detail in band.contest_details %}
+            <tr>
+                <td class="contest-date">{{detail.contest.date.strftime('%Y/%m/%d')}}</td>
+                <td class="contest-name">{{detail.contest.get_fullname()}}</td>
+                <td class="contest-points">{{detail.points}}</td>
+                <td class="contest-rank">{{detail.ranking.name}}</td>
+                <td class="contest-position">{{detail.position}}</td>
+                <td class="contest-conductor">{{detail.conductor.name if detail.conductor else ''}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="/static/js/jquery.flot.min.js"></script> 
+<script src="/static/js/jquery.flot.time.min.js"></script> 
+<script src="/static/js/jquery.flot.resize.min.js"></script> 
+<script type="text/javascript">
+    
+    $(function () {
+        var lFlotData = [
+        {
+            label: "lines",
+            lines:  { show: true },
+            color: '#99ccff',
+            hoverable: true, 
+            clickable: false,
+            data: [[new Date("2016/02/28"), 1],[new Date("2015/11/22"), 1],[new Date("2015/05/17"), 4],[new Date("2015/03/22"), 12],[new Date("2015/03/01"), 4],[new Date("2014/11/23"), 5],[new Date("2014/10/12"), 1],[new Date("2014/10/05"), 8],[new Date("2014/04/26"), 15],[new Date("2014/03/16"), 5],[new Date("2014/02/23"), 2],[new Date("2014/02/23"), 2]] 
+        },
+        {
+            label: [["17th May 2015<br/>Weston-super-Mare (Championship &amp; First Section),<br/>4th <br/>Duncan Wilson"],["22nd Mar 2015<br/>London and Southern Counties (Championship Section),<br/>12th <br/>Duncan Wilson"],["1st Mar 2015<br/>Oxfordshire &amp; District BBA Winter Contest (Championship Section),<br/>4th <br/>Duncan Wilson"],["23rd Nov 2014<br/>Leicestershire BBA (Leicester) Contest (Open Section),<br/>5th <br/>Duncan Wilson"],["5th Oct 2014<br/>Bolsover Entertainment Contest (Championship Section),<br/>8th <br/>Duncan Wilson"],["26th Apr 2014<br/>British Open Spring Festival (Senior Trophy),<br/>15th <br/>Duncan Wilson"],["16th Mar 2014<br/>London and Southern Counties (Championship Section),<br/>5th <br/>Duncan Wilson"]],
+            points: { show: true, fillColor: "#3d7dbd" },
+            color: '#3d7dbd',
+            hoverable: true, 
+            clickable: false,
+            data: [[new Date("2015/05/17"), 4],[new Date("2015/03/22"), 12],[new Date("2015/03/01"), 4],[new Date("2014/11/23"), 5],[new Date("2014/10/05"), 8],[new Date("2014/04/26"), 15],[new Date("2014/03/16"), 5]] 
+        },
+        {
+            label: [["28th Feb 2016<br/>Oxfordshire &amp; District BBA Winter Contest (First Section),<br/>1st <br/>Duncan Wilson"],["22nd Nov 2015<br/>Leicestershire BBA (Leicester) Contest (Open Section),<br/>1st <br/>Duncan Wilson"],["12th Oct 2014<br/>Oxfordshire &amp; District BBA Entertainment Contest (Open Section),<br/>1st <br/>Duncan Wilson"]],
+            points: { show: true, fillColor: "#ffc600" },
+            color: '#ffc600',
+            hoverable: true, 
+            clickable: false,
+            data: [[new Date("2016/02/28"), 1],[new Date("2015/11/22"), 1],[new Date("2014/10/12"), 1]] 
+        },
+        {
+            label: [["23rd Feb 2014<br/>Oxfordshire &amp; District BBA Winter Contest (Open March),<br/>2nd <br/>Duncan Wilson"],["23rd Feb 2014<br/>Oxfordshire &amp; District BBA Winter Contest (Open Section),<br/>2nd <br/>Duncan Wilson"]],
+            points: { show: true, fillColor: "#919191" },
+            color: '#919191',
+            hoverable: true, 
+            clickable: false,
+            data: [[new Date("2014/02/23"), 2],[new Date("2014/02/23"), 2]] 
+        },
+        {
+            label: [],
+            points: { show: true, fillColor: "#7a6e55" },
+            color: '#7a6e55',
+            hoverable: true, 
+            clickable: false,
+            data: []
+        }];
+
+        var options = { 
+            grid: {
+                hoverable: true, 
+                clickable: false,
+                autoHighlight: true,
+                borderWidth: 0
+            },
+            legend: {
+                show: false
+            },
+            yaxis: {
+               transform: function (v) { return -v; },
+               inverseTransform: function (v) { return -v; },
+               max: 25,
+               ticks: [1, 5, 10, 15, 20, 25],
+               // color: "#000000"
+            },
+            xaxis: { 
+               mode: "time",
+               // color: "#000000"
+            }
+        };
+
+        $.plot($("#placeholder"), lFlotData, options);
+    });
+
+    function showTooltip(x, y, contents) {
+        $('<div id="flot_chart_tooltip">' + contents + '</div>').css( {
+            top: y + 5,
+            left: x + 5,
+        }).appendTo("body").fadeIn(200);
+    }
+
+    $("#placeholder").bind("plothover", function (event, pos, item) {
+        $("#flot_chart_tooltip").remove();
+        if (item) {
+            showTooltip(item.pageX, item.pageY, item.series.label[item.dataIndex]);
+        }
+    });
+</script>
+{% include 'elements/clickable-row.html' %}
+{% include 'elements/sortable-table.html' %}
+{% endblock %}

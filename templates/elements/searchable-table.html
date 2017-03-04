@@ -1,0 +1,47 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.1.1/list.min.js"></script>
+
+<script>
+/* table filtering configuration */
+var list_options = {
+    valueNames: {{ search_fields|safe }},
+    page: 999999999
+};
+var data_list = new List("original", list_options);
+
+$('.header').click(function(){
+    $("#filtertext").val('');
+    data_list.search();
+});
+
+/* empty filter inputbox */
+$("#filterclear").click(function(){
+    $("#filtertext").val('');
+    data_list.search();
+});
+$('input[type="text"]').keyup(function(e){
+    if(e.keyCode == 27) {
+      $(this).val('');
+      data_list.search();
+  }
+});
+$("#filtertext").keyup(function(){
+    data_list.search($("#filtertext").val());
+});
+
+var SHORTCUTS = {{ shortcut_options|safe }};
+
+$(document).ready(function(){
+    // generate shortcuts
+    for (i in SHORTCUTS){
+        $('#shortcut-container').append('<span class="btn btn-info btn-xs shortcut-btn">' + SHORTCUTS[i] + '</span>&nbsp;');
+    }
+
+    $('.shortcut-btn').click(function(){
+        $("#filtertext").val($(this).text() + ' ');
+        data_list.search($(this).text());
+        $("#filtertext")[0].focus();
+    });
+    
+    $("#filtertext")[0].focus();
+});
+</script>

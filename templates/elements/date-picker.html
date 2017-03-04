@@ -1,0 +1,15 @@
+<script src="/js/bootstrap-datepicker.min.js"></script>
+<script src="/js/bootstrap-datepicker.zh-TW.min.js" charset="UTF-8"></script>
+
+<script>
+$(document).ready(function(){
+    $('.input-group.date').datepicker({
+        format: "yyyy 年 mm 月 dd 日",
+        weekStart: 1,
+        startView: 2,
+        language: "zh-TW",
+        endDate: '+0d',
+        autoclose: true
+    });
+});
+</script>

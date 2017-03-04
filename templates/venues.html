@@ -1,0 +1,39 @@
+{% extends "background.html" %}
+{% block body %}
+<h1>場地列表
+    <div class="btn-group"  style="float: right; width: 25%;">
+        <input type="text" id="filtertext" class="form-control search" placeholder="{{ search_hint }}" required="" >
+        <span id="filterclear" class="glyphicon glyphicon-remove-circle"></span>
+    </div>
+</h1>
+<div style="float: right; text-align: right;" id='shortcut-container'></div>
+<br/><br/>
+<div id='original'>
+    <table class="table table-hover table-sort ">
+        <thead>
+            <tr>
+                <th class="header">名稱</th>
+                <th class="header">地區</th>
+                <th class="header">使用次數</th>
+            </tr>
+        </thead>
+        <tbody class="list">
+            {% for venue in venues: %}
+            <tr class="clickable-row" data-href="/venue/{{ venue['id'] }}">
+                <td class="venue-name">{{ venue['name'] }}</td>
+                <td class="venue-location">{{ venue.location.name }}</td>
+                <td class="venue-contest-count">{{ venue['contest_count'] }}</td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block js %}
+{% include 'elements/clickable-row.html' %}
+{% include 'elements/tooltip-enabler.html' %}
+{% include 'elements/sortable-table.html' %}
+{% include 'elements/searchable-table.html' %}
+{% endblock %}

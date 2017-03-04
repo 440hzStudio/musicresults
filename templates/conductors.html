@@ -1,0 +1,40 @@
+{% extends "background.html" %}
+{% block body %}
+<h1>指揮列表
+    <div class="btn-group"  style="float: right; width: 25%;">
+        <input type="text" id="filtertext" class="form-control search" placeholder="{{ search_hint }}" required="" >
+        <span id="filterclear" class="glyphicon glyphicon-remove-circle"></span>
+    </div>
+</h1>
+<div style="float: right; text-align: right;" id='shortcut-container'></div>
+<br/><br/>
+<div id='original'>
+    <table class="table table-hover table-sort ">
+        <thead>
+            <tr>
+                <th class="header">姓名</th>
+                <th class="header">參賽次數</th>
+                <th class="header">獲勝次數</th>
+            </tr>
+        </thead>
+        <tbody class="list">
+            {% for conductor in conductors: %}
+            {% if conductor[1] %}
+            <tr class="clickable-row" data-href="/person/conductor/{{conductor[0].id}}">
+                <td class="conductor-name">{{conductor[0].name}}</td>
+                <td class="conductor-contest-count">{{conductor[1]}}</td>
+                <td class="conductor-winning-count">{{conductor[2]}}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block js %}
+{% include 'elements/clickable-row.html' %}
+{% include 'elements/tooltip-enabler.html' %}
+{% include 'elements/sortable-table.html' %}
+{% include 'elements/searchable-table.html' %}
+{% endblock %}

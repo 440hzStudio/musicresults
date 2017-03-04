@@ -1,0 +1,51 @@
+{% extends "background.html" %}
+{% block body %}
+<h1>{{ venue['name'] }}</h1>
+<div>
+    <p>地址：{{ venue['address'] }}</p>
+</div>
+<div class="embed-responsive map-overlay">
+    <iframe src="https://www.google.com/maps/embed/v1/place?q={{ venue['name'] }}&key=AIzaSyCXJRgeU799uSAMg6qh_nf8H0qLW29td14" frameborder="0" style="border:0" class="embed-responsive-item map" allowfullscreen></iframe>
+</div>
+
+<h3>歷年比賽記錄</h3>
+<div id='original'>
+    <table class="table table-hover table-sort ">
+        <thead> 
+            <tr>
+                <th class="header">年份</th>
+                <th class="header">比賽</th>
+                <th class="header">區域</th>
+                <th class="header">組別</th>
+            </tr>
+        </thead>
+        <tbody class="list">
+            {% for contest in contests: %}
+            <tr>
+                <td class="set-piece-year">{{ contest.date.strftime('%Y') }}</td>
+                <td class="set-piece-contest">{{ contest.get_fullname() }}</td>
+                <td class="set-piece-area">{{ contest.area.name }}</td>
+                <td class="set-piece-group">{{ contest.category }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function () {
+        $('.map').addClass('scrolloff'); // set the pointer events to none on doc ready
+        $('.map-overlay').on('click', function () {
+            $('.map').removeClass('scrolloff'); // set the pointer events true on click
+        });
+
+        $(".map-overlay").mouseleave(function () {
+            $('.map').addClass('scrolloff');
+        });
+    });
+</script>
+{% include 'elements/clickable-row.html' %}
+{% include 'elements/sortable-table.html' %}
+{% endblock %}

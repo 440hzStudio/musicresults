@@ -1,0 +1,9 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.23.2/js/jquery.tablesorter.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    $("table.table-sort").tablesorter({
+        sortList: [[{{ sortme if sortme else '0' }}, {{ '0' if ascending else '1' }}]]
+    });
+});
+</script>

@@ -1,0 +1,44 @@
+{% extends "background.html" %}
+{% block body %}
+<h1>比賽曲列表
+    <div class="btn-group"  style="float: right; width: 25%;">
+        <input type="text" id="filtertext" class="form-control search" placeholder="{{ search_hint }}" required="" >
+        <span id="filterclear" class="glyphicon glyphicon-remove-circle"></span>
+    </div>
+</h1>
+<div style="float: right; text-align: right;" id='shortcut-container'></div>
+<br/><br/>
+<div id='original'>
+    <table class="table table-hover table-sort ">
+        <thead>
+            <tr>
+                <th class="header">曲名</th>
+                <th class="header">作曲者</th>
+                <th class="header">編曲者</th>
+                <th class="header">指定曲次數</th>
+                <th class="header">自選曲次數</th>
+                <th class="header">年份</th>
+            </tr>
+        </thead>
+        <tbody class="list">
+            {% for piece in test_pieces: %}
+            <tr class="clickable-row" data-href="/test-piece/{{piece.id}}">
+                <td class="piece-name">{{piece.name}}</td>
+                <td class="piece-composer">{{piece.composer.name if piece.composer_id else ''}}</td>
+                <td class="piece-arranger">{{piece.arranger.name if piece.arranger_id else ''}}</td>
+                <td class="piece-set-test-count">{{piece.set_piece_count}}</td>
+                <td class="piece-own-choice-count">{{piece.own_choice_count}}</td>
+                <td class="piece-year">{{piece.year if piece.year else ''}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block js %}
+{% include 'elements/clickable-row.html' %}
+{% include 'elements/tooltip-enabler.html' %}
+{% include 'elements/sortable-table.html' %}
+{% include 'elements/searchable-table.html' %}
+{% endblock %}

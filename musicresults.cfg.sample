@@ -1,0 +1,24 @@
+# flask
+DEBUG = True
+PROPAGATE_EXCEPTIONS = True
+SECRET_KEY = ''  # binascii.hexlify(os.urandom(24))
+
+# flask-social  https://pythonhosted.org/Flask-Social/
+SOCIAL_FACEBOOK = {  # https://developers.facebook.com/apps/
+    'consumer_key': 'facebook app id',
+    'consumer_secret': 'facebook app secret'
+}
+SOCIAL_GOOGLE = {
+    'consumer_key': 'xxxx',
+    'consumer_secret': 'xxxx'
+}
+
+# app
+HOST = '127.0.0.1'
+PORT = 8080
+RUNNING_MODE = 'debug'  # debug | prod
+DATABASE = 'sqlite'  # sqlite | mysql
+DB_HOST = ''
+DB_USER = ''
+DB_PASSWORD = ''
+PWD_SALT = ''

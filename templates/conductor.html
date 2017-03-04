@@ -1,0 +1,45 @@
+{% extends "background.html" %}
+{% block body %}
+<h1>{{ conductor['name'] }}</h1>
+{% if conductor['biography']: %}
+<div>
+    {% for p in conductor['biography']: %}
+    <p>{{p}}</p>
+    {% endfor %}
+</div>
+{% endif %}
+<br/>
+
+<h3>歷年比賽記錄</h3>
+<div id='original'>
+    <table class="table table-hover table-sort ">
+        <thead>
+            <tr>
+                <th class="header">日期</th>
+                <th class="header">比賽</th>
+                <th class="header">樂團</th>
+                <th class="header">分數</th>
+                <th class="header">等地</th>
+                <th class="header">名次</th>
+            </tr>
+        </thead>
+        <tbody class="list">
+            {% for detail in contest_details: %}
+            <tr>
+                <td class="contest-date">{{detail.contest.date.strftime('%Y/%m/%d')}}</td>
+                <td class="contest-name">{{detail.contest.get_fullname()}}</td>
+                <td class="contest-band">{{detail.band.name}}</td>
+                <td class="contest-points">{{detail.points}}</td>
+                <td class="contest-rank">{{detail.ranking.name}}</td>
+                <td class="contest-position">{{detail.position}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block js %}
+{% include 'elements/clickable-row.html' %}
+{% include 'elements/sortable-table.html' %}
+{% endblock %}

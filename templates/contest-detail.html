@@ -1,0 +1,75 @@
+{% extends "background.html" %}
+{% block body %}
+<h1>{{contest_name}} - {{contest_area}}</h1>
+<br/>
+<div>
+    <p>指定曲：{% if contest['test_pieces'] %}{% for p in contest['test_pieces'] %}<a href="/test-piece/{{p['id']}}">{{ p['name'] }}</a>{% if p != contest['test_pieces'][-1] %}、{% endif %}{% endfor %}{% else %}無資料{% endif %}</p>
+    <p>比賽日期：{{ contest.date.strftime('%Y 年 %m 月 %d 日') }}</p>
+    <p>比賽地點：{% if contest['venue'] %}<a href="/venue/{{contest['venue']['id']}}">{{contest['venue']['name']}}</a>{% else %}無資料{% endif %}</p>
+    <!-- <p>評審：Philip Sparke、Peter Graham、Philip Harper</p> -->
+</div>
+<br/><br/>
+<div id='original'>
+    <table class="table table-hover table-sort ">
+        <thead> 
+            <tr>
+                <th class="header">名次</th>
+                <th class="header">樂團</th>
+                <th class="header">指揮</th>
+                <th class="header">指定曲</th>
+                <th class="header">自選曲</th>
+                <th class="header">分數</th>
+                <th class="header">等第</th>
+                <th class="header">演奏順序</th>
+                <th class="header">備註</th>
+            </tr>
+        </thead>
+        <tbody class="list">
+            {% for team in contest['teams'] %}
+            <tr>
+                <td class="contest-position">{{team.position}}</td>
+                <td class="contest-band">{{team.band.name}}</td>
+                <td class="contest-conductor">{{team.conductor.name}}</td>
+                <td class="contest-set-piece"><span>{{team.set_piece.name}}</span>{% if team.set_piece_recording %} <button type="button" class="video-trigger btn btn-primary btn-xs" data-toggle="modal" data-target=".bs-example-modal-lg" src="https://www.youtube.com/embed/{{team.set_piece_recording}}"><i class="fa fa-youtube-play"></i> 比賽錄影</button>{% endif %}</td>
+                <td class="contest-own-choice"><span>{{team.own_choice.name}}</span>{% if team.own_choice_recording %} <button type="button" class="video-trigger btn btn-primary btn-xs" data-toggle="modal" data-target=".bs-example-modal-lg" src="https://www.youtube.com/embed/{{team.own_choice_recording}}"><i class="fa fa-youtube-play"></i> 比賽錄影</button>{% endif %}</td>
+                <td class="contest-points">{{team.points}}</td>
+                <td class="contest-ranking">{{team.ranking.name}}</td>
+                <td class="contest-playing-order">{{team.playing_order}}</td>
+                <td class="contest-misc">{{team.misc if team.misc else ''}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div id='video-modal' class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 id='video-title' class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe id='video-player' class="embed-responsive-item" src=""></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".video-trigger").click(function() {
+            $('#video-player').attr('src', $(this).attr('src'));
+            $('#video-title').text($(this).prev().html() + ' - ' + $(this).parent().siblings('.contest-band').html());
+        });
+        $('#video-modal').on('hidden.bs.modal', function () {
+            $('#video-player').attr('src', '');
+        })
+    });
+</script>
+{% include 'elements/clickable-row.html' %}
+{% include 'elements/sortable-table.html' %}
+{% endblock %}

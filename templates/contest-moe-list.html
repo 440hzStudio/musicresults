@@ -1,0 +1,36 @@
+{% extends "background.html" %}
+{% block body %}
+<h1>學生音樂比賽
+    <div class="btn-group"  style="float: right; width: 25%;">
+        <input type="text" id="filtertext" class="form-control search" placeholder="{{ search_hint }}" required="" >
+        <span id="filterclear" class="glyphicon glyphicon-remove-circle"></span>
+    </div>
+</h1>
+<div style="float: right; text-align: right;" id='shortcut-container'></div>
+<br/><br/>
+<div id='original'>
+    <table class="table table-hover table-sort ">
+        <thead> 
+            <tr>
+                <th class="header">比賽名稱</th>
+                <th class="header">比賽數</th>
+            </tr>
+        </thead>
+        <tbody class="list">
+            {% for contest in contests %}
+            <tr class="clickable-row" data-href="/contest/moe/{{contest[0].id}}">
+                <td class="contest-location">{{contest[0].name}}</td>
+                <td class="contest-count">{{contest[1]}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block js %}
+{% include 'elements/clickable-row.html' %}
+{% include 'elements/tooltip-enabler.html' %}
+{% include 'elements/sortable-table.html' %}
+{% include 'elements/searchable-table.html' %}
+{% endblock %}

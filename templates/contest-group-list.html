@@ -1,0 +1,40 @@
+{% extends "background.html" %}
+{% block body %}
+<h1>{{contest['name']}}
+    <div class="btn-group"  style="float: right; width: 25%;">
+        <input type="text" id="filtertext" class="form-control search" placeholder="{{ search_hint }}" required="" >
+        <span id="filterclear" class="glyphicon glyphicon-remove-circle"></span>
+    </div>
+</h1>
+<div style="float: right; text-align: right;" id='shortcut-container'></div>
+<br/><br/>
+<div id='original'>
+    <table class="table table-hover table-sort ">
+        <thead> 
+            <tr>
+                {% if meta['has_area'] %}<th class="header">地域</th>{% endif %}
+                <th class="header">組別</th>
+                {% if meta['has_category'] %}<th class="header">A/B 組</th>{% endif %}
+                <th class="header">現任冠軍</th>
+            </tr>
+        </thead>
+        <tbody class="list">
+            {% for c in contest['contests'] %}
+            <tr class="clickable-row" data-href="/contest/{{meta['contest_id']}}/{{contest['id']}}/{{c['area']['id']}}/{{c['band_type']}}/{{c['category']}}">
+                <td class="contest-area">{{c['area']['name']}}</td>
+                <td class="contest-band-type">{{c.band_type}}</td>
+                <td class="contest-category">{{c.category}} 組</td>
+                <td class="contest-current-champion">{{c.champion.band.name if c.champion else ''}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block js %}
+{% include 'elements/clickable-row.html' %}
+{% include 'elements/tooltip-enabler.html' %}
+{% include 'elements/sortable-table.html' %}
+{% include 'elements/searchable-table.html' %}
+{% endblock %}

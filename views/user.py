@@ -64,7 +64,7 @@ def info():
                 request.form['phone1'], request.form['phone2'], request.form['phone3'])
             user.cell_phone = request.form['cellphone']
             user.school_id = request.form['school']
-        except:
+        except Exception:
             status = 'error'
         else:
             db_session.commit()

@@ -9,7 +9,7 @@ test:
 	pip install -r requirements.test.txt > /dev/null
 
 lint:
-	pylint **/**.py
+	pylint **/**.py --rcfile pylintrc
 
 mypy:
 	mypy . --config-file mypy.ini

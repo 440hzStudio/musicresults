@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template
 from models import Person, ContestDetail
 
-person_mod = Blueprint('person_mod', __name__)
+PERSON_MOD = Blueprint('person_mod', __name__)
 
 
-@person_mod.route('/conductor/')
+@PERSON_MOD.route('/conductor/')
 def all_people():
     from sqlalchemy import func
     from database import db_session
@@ -27,7 +27,7 @@ def all_people():
         conductors=conductors)
 
 
-@person_mod.route('/conductor/<conductor_id>')
+@PERSON_MOD.route('/conductor/<conductor_id>')
 def conductor_info(conductor_id):
     search_fields = []
     shortcut_options = []

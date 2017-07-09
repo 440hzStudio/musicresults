@@ -8,7 +8,7 @@ from validate_email import validate_email
 import flask_login
 from models import User, Constant
 
-user_mod = Blueprint('user_mod', __name__)
+USER_MOD = Blueprint('user_mod', __name__)
 password_hash = None
 
 
@@ -26,7 +26,7 @@ def hash_password(password):
     return binascii.hexlify(dk).decode('ascii')
 
 
-@user_mod.route('/info', methods=['GET', 'POST'])
+@USER_MOD.route('/info', methods=['GET', 'POST'])
 @flask_login.login_required
 def info():
     if not flask_login.current_user.is_teacher():
@@ -80,7 +80,7 @@ def info():
     )
 
 
-@user_mod.route('/register', methods=['GET', 'POST'])
+@USER_MOD.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         status = ''
@@ -142,7 +142,7 @@ def register():
         )
 
 
-@user_mod.route('/login', methods=['GET', 'POST'])
+@USER_MOD.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
         if flask_login.current_user.is_authenticated:
@@ -172,7 +172,7 @@ def login():
     return jsonify(status=status, messages=messages, url=url)
 
 
-@user_mod.route('/logout')
+@USER_MOD.route('/logout')
 @flask_login.login_required
 def logout():
     flask_login.logout_user()
@@ -185,6 +185,6 @@ def is_user_exists(username):
     return False
 
 
-@user_mod.route('/exists/<username>')
+@USER_MOD.route('/exists/<username>')
 def exists(username):
     return jsonify(is_user_exists(username))

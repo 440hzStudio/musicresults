@@ -1,10 +1,9 @@
 from flask import Blueprint, render_template
 from models import Venue, Contest
 
-venue_mod = Blueprint('venue_mod', __name__)
+VENUE_MOD = Blueprint('venue_mod', __name__)
 
-
-@venue_mod.route('/')
+@VENUE_MOD.route('/')
 def all_venues():
     breadcrumb = dict()
     breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
@@ -28,7 +27,7 @@ def all_venues():
         venues=venues)
 
 
-@venue_mod.route('/<venue_id>')
+@VENUE_MOD.route('/<venue_id>')
 def venue(venue_id):
     if not venue_id.isdigit():
         raise 400

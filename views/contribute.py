@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template, flash, request
 from models import ContestType
 # import flask_login
-contribute_mod = Blueprint('contribute_mod', __name__)
+CONTRIBUTE_MOD = Blueprint('contribute_mod', __name__)
 
 
-@contribute_mod.route('/', methods=['GET', 'POST'])
+@CONTRIBUTE_MOD.route('/', methods=['GET', 'POST'])
 def contribute():
     breadcrumb = dict()
     breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]

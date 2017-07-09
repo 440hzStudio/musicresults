@@ -1,11 +1,12 @@
-from flask import Blueprint, render_template
-from models import ContestType, Contest, ContestDetail, TestPiece
 import datetime
 
-contest_mod = Blueprint('contest_mod', __name__)
+from flask import Blueprint, render_template
+from models import ContestType, Contest, ContestDetail, TestPiece
+
+CONTEST_MOD = Blueprint('contest_mod', __name__)
 
 
-@contest_mod.route('/moe/')
+@CONTEST_MOD.route('/moe/')
 def all_contests_moe():
     from sqlalchemy import func
     from database import db_session
@@ -30,7 +31,7 @@ def all_contests_moe():
         breadcrumb=breadcrumb)
 
 
-@contest_mod.route('/moe/<contest_type_id>')
+@CONTEST_MOD.route('/moe/<contest_type_id>')
 def all_contests_moe_location(contest_type_id):
     contest = ContestType.query.filter_by(id=contest_type_id).first()
 
@@ -64,7 +65,7 @@ def all_contests_moe_location(contest_type_id):
         meta=meta)
 
 
-@contest_mod.route('/moe/<contest_type_id>/<area_id>/<band_type>/<category>')
+@CONTEST_MOD.route('/moe/<contest_type_id>/<area_id>/<band_type>/<category>')
 def all_contests_moe_location_area(contest_type_id, area_id, band_type, category):
     contests = Contest.query.filter_by(contest_type_id=contest_type_id, area_id=area_id, band_type=band_type, category=category).all()
 
@@ -103,7 +104,7 @@ def all_contests_moe_location_area(contest_type_id, area_id, band_type, category
         contest_area=contest_area)
 
 
-@contest_mod.route('/moe/<contest_type_id>/<area_id>/<band_type>/<category>/<year>')
+@CONTEST_MOD.route('/moe/<contest_type_id>/<area_id>/<band_type>/<category>/<year>')
 def all_contests_moe_location_area_group_category_year(contest_type_id, area_id, band_type, category, year):
     contest = Contest.query.filter(Contest.contest_type_id == contest_type_id, Contest.area_id == area_id, Contest.band_type == band_type, Contest.category == category, Contest.date > datetime.datetime.strptime(year, '%Y'), Contest.date < datetime.datetime.strptime(str(int(year) + 1), '%Y')).first()
 

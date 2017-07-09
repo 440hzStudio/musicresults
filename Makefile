@@ -9,13 +9,13 @@ test:
 	pip install -r requirements.test.txt > /dev/null
 
 pylint:
-	pylint {,**/}*.py --rcfile pylintrc
+	pylint *.py **/*.py --rcfile pylintrc
 
 mypy:
 	mypy . --config-file mypy.ini
 
 pycodestyle:
-	pycodestyle {,**/}*.py --statistics --config=pycodestyle.ini
+	pycodestyle *.py **/*.py --statistics --config=pycodestyle.ini
 
 venv:
 	if [ ! -d $(venv) ]; then virtualenv $(venv) --python=python3.6; fi

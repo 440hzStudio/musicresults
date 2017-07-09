@@ -10,8 +10,9 @@ install:
     - pip install --requirement requirements.test.txt
 
 script:
-    - make lint  # pylint
-    - make mypy  # type hints
+    - make pycodestyle
+    - make pylint
+    - make mypy
     - make test  # incl. coverage
 
 notifications:

@@ -9,6 +9,9 @@ install:
     - pip install --requirement requirements.txt
     - pip install --requirement requirements.test.txt
 
+before_script:
+    - shopt -s globstar
+
 script:
     - make pycodestyle
     - make pylint

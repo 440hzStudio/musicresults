@@ -5,8 +5,8 @@ venv := .env
 run: venv
 	$(venv)/bin/python musicresults.py
 
-test: venv
-	$(venv)/bin/pip install -r requirements.test.txt > /dev/null
+test:
+	pip install -r requirements.test.txt > /dev/null
 
 lint:
 	pylint **/**.py

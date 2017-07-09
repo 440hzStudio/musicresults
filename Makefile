@@ -8,8 +8,8 @@ run: venv
 test:
 	pip install -r requirements.test.txt > /dev/null
 
-lint:
-	pylint **/**.py --rcfile pylintrc
+pylint:
+	pylint {,**/}*.py --rcfile pylintrc
 
 mypy:
 	mypy . --config-file mypy.ini

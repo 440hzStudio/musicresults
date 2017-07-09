@@ -11,6 +11,7 @@ install:
 
 script:
     - make lint  # pylint
+    - make mypy  # type hints
     - make test  # incl. coverage
 
 notifications:

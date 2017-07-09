@@ -11,6 +11,9 @@ test:
 lint:
 	pylint **/**.py
 
+mypy:
+	mypy . --config-file mypy.ini
+
 venv:
 	if [ ! -d $(venv) ]; then virtualenv $(venv) --python=python3.6; fi
 	$(venv)/bin/pip install -r requirements.txt > /dev/null

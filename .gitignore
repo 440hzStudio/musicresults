@@ -3,3 +3,4 @@
 *.cfg
 *.db
 __pycache__/
+.mypy_cache/

@@ -1,15 +1,11 @@
 #!/bin/bash
 
-cd "$( dirname "${BASH_SOURCE[0]}" )"
+cd "$( dirname "${BASH_SOURCE[0]}" )" || exit
 venv=.env
 
 if [ ! -d $venv ]; then
     virtualenv $venv --python=python3.6
 fi
 
-source $venv/bin/activate
-pip install -r requirements.txt > /dev/null
-
-python musicresults.py
-
-deactivate
+$venv/bin/pip install -r requirements.txt > /dev/null
+$venv/bin/python musicresults.py

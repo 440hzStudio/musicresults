@@ -1,9 +1,7 @@
-click==6.7
-Flask==0.12
+Flask==0.12.2
 Flask-Login==0.4.0
-itsdangerous==0.24
-Jinja2==2.9.2
-MarkupSafe==0.23
+Flask-MySQL==1.4.0
+Jinja2==2.9.6
 mypy-lang==0.4.6
-pipdeptree==0.8.0
-Werkzeug==0.11.15
+SQLAlchemy==1.1.11
+validate-email==1.3

@@ -115,7 +115,7 @@ def register():
                 messages.append(('請選擇學校', 'danger'))
 
             if messages:
-                raise Exception
+                raise ValueError
 
             user = User(request.form['username'], request.form['email'])
             user.realname = request.form['name']
@@ -126,7 +126,7 @@ def register():
             user.school_id = request.form['school']
             user.create_time = datetime.datetime.now()
             user.type = 'teacher'
-        except Exception:
+        except ValueError:
             status = 'error'
         else:
             db_session = get_db_session()

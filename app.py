@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# pylint: skip-file
 
 # This file may be used instead of Apache mod_wsgi to run your python
 # web application in a different framework.    A few examples are

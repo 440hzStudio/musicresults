@@ -8,7 +8,7 @@ from validate_email import validate_email
 import flask_login
 
 from database import get_db_session
-from models import User, Constant
+from models import User
 
 USER_MOD = Blueprint('user_mod', __name__)
 PASSWORD_HASH = ''
@@ -77,7 +77,6 @@ def info():
 
     return render_template(
         'user_info.html',
-        class_level=Constant.class_level,
         current_user=flask_login.current_user
     )
 
@@ -140,7 +139,6 @@ def register():
     else:
         return render_template(
             'user_register.html',
-            class_level=Constant.class_level,
             current_user=flask_login.current_user
         )
 
@@ -152,7 +150,6 @@ def login():
             return redirect(url_for('index'))
         return render_template(
             'user_login.html',
-            class_level=Constant.class_level,
             current_user=flask_login.current_user
         )
 

@@ -15,7 +15,7 @@ PASSWORD_HASH = ''
 
 
 def set_hash(password_hash):
-    global PASSWORD_HASH
+    global PASSWORD_HASH  # pylint: disable=global-statement
     PASSWORD_HASH = password_hash
 
 

@@ -136,11 +136,10 @@ def register():
             flash('註冊成功', 'success')
             url = url_for('user_mod.login')
         return jsonify(status=status, messages=messages, url=url)
-    else:
-        return render_template(
-            'user_register.html',
-            current_user=flask_login.current_user
-        )
+    return render_template(
+        'user_register.html',
+        current_user=flask_login.current_user
+    )
 
 
 @USER_MOD.route('/login', methods=['GET', 'POST'])

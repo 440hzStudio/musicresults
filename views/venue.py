@@ -30,7 +30,10 @@ def all_venues():
 @VENUE_MOD.route('/<venue_id>')
 def venue(venue_id):
     if not venue_id.isdigit():
-        raise 400
+        return render_template(
+            'error.html',
+            title='Invalid venue ID',
+            reason=f'[{venue_id}] is not a valid format.'), 400
 
     venue = Venue.query.filter_by(id=venue_id).first()
     contest_record = Contest.query.filter_by(venue_id=venue_id).all()

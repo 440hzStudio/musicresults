@@ -5,7 +5,7 @@ CONTRIBUTE_MOD = Blueprint('contribute_mod', __name__)
 
 
 @CONTRIBUTE_MOD.route('/', methods=['GET', 'POST'])
-def contribute():
+def contribute() -> str:
     breadcrumb = dict()
     breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
     breadcrumb['current'] = {'name': '貢獻'}

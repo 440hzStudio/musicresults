@@ -52,7 +52,7 @@ class Contest(ORM_BASE):
     band_type = Column(String(50))
     set_pieces = relationship('TestPiece', secondary=SET_PIECE_LIST, backref='Contest')
 
-    def get_fullname(self, prefix=True, ctype=True, area=True, category=True, band_type=True):
+    def get_fullname(self, prefix: bool = True, ctype: bool = True, area: bool = True, category: bool = True, band_type: bool = True) -> str:
         return '{}{}{}{}{}'.format(
             self.name_prefix if prefix else '',
             self.contest_type.name if ctype else '',
@@ -147,27 +147,27 @@ class User(ORM_BASE):
     user_type = Column(String(50))
     active = Column(Boolean)
 
-    def __init__(self, username=None, email=None):
+    def __init__(self, username: str = None, email: str = None) -> None:
         self.username = username
         self.email = email
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<User %r>' % (self.username)
 
-    def is_admin(self):
+    def is_admin(self) -> bool:
         return self.type == 'admin'
 
     # - for flask-login - #
     @property
-    def is_active(self):
+    def is_active(self) -> bool:
         return self.is_active
 
     @property
-    def is_authenticated(self):
+    def is_authenticated(self) -> bool:
         return True
 
     @property
-    def is_anonymous(self):
+    def is_anonymous(self) -> bool:
         return False
 
     # def get_id(self):

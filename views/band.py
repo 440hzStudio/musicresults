@@ -6,7 +6,7 @@ from models import Constant, Band, ContestDetail, Contest
 BAND_MOD = Blueprint('band_mod', __name__)
 
 
-def get_winning_records():
+def get_winning_records() -> defaultdict:
     winning_records = defaultdict(list)
     contests = Contest.query.all()
     for contest in contests:
@@ -17,7 +17,7 @@ def get_winning_records():
 
 
 @BAND_MOD.route('/')
-def get_all_band_list():
+def get_all_band_list() -> str:
     breadcrumb = dict()
     breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
     breadcrumb['current'] = {'name': '樂團'}
@@ -42,7 +42,7 @@ def get_all_band_list():
 
 
 @BAND_MOD.route('/<band_id>')
-def get_band_detail(band_id):
+def get_band_detail(band_id: str) -> str:
     band = Band.query.filter_by(id=band_id).first()
     band.trophies = get_winning_records()[band.id]
     breadcrumb = dict()

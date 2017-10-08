@@ -2,6 +2,7 @@
 import datetime
 import hashlib
 import binascii
+from typing import Optional, Tuple
 
 from flask import Blueprint, render_template, request, url_for, redirect, flash, jsonify
 from validate_email import validate_email
@@ -14,12 +15,12 @@ USER_MOD = Blueprint('user_mod', __name__)
 PASSWORD_HASH = ''
 
 
-def set_hash(password_hash):
+def set_hash(password_hash: str) -> None:
     global PASSWORD_HASH  # pylint: disable=global-statement
     PASSWORD_HASH = password_hash
 
 
-def hash_password(password):
+def hash_password(password: str) -> str:
     data = hashlib.pbkdf2_hmac(
         'sha256',
         bytearray(password, 'ascii'),
@@ -30,7 +31,7 @@ def hash_password(password):
 
 @USER_MOD.route('/info', methods=['GET', 'POST'])
 @flask_login.login_required
-def info():
+def info() -> Tuple[str, Optional[int]]:
     if not flask_login.current_user.is_teacher():
         return '403 Forbidden.', 403
 
@@ -82,7 +83,7 @@ def info():
 
 
 @USER_MOD.route('/register', methods=['GET', 'POST'])
-def register():
+def register() -> str:
     if request.method == 'POST':
         status = ''
         messages = []
@@ -143,7 +144,7 @@ def register():
 
 
 @USER_MOD.route('/login', methods=['GET', 'POST'])
-def login():
+def login() -> str:
     if request.method == 'GET':
         if flask_login.current_user.is_authenticated:
             return redirect(url_for('index'))
@@ -173,17 +174,17 @@ def login():
 
 @USER_MOD.route('/logout')
 @flask_login.login_required
-def logout():
+def logout() -> str:
     flask_login.logout_user()
     return redirect(url_for('news_mod.list'))
 
 
-def is_user_exists(username):
+def is_user_exists(username: str) -> bool:
     if User.query.filter_by(username=username).all():
         return True
     return False
 
 
 @USER_MOD.route('/exists/<username>')
-def exists(username):
+def exists(username: str) -> str:
     return jsonify(is_user_exists(username))

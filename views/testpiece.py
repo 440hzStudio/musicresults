@@ -5,7 +5,7 @@ TESTPIECE_MOD = Blueprint('testpiece_mod', __name__)
 
 
 @TESTPIECE_MOD.route('/')
-def all_test_pieces():
+def all_test_pieces() -> str:
     breadcrumb = dict()
     breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
     breadcrumb['current'] = {'name': '比賽曲'}
@@ -30,7 +30,7 @@ def all_test_pieces():
 
 
 @TESTPIECE_MOD.route('/<test_piece_id>')
-def get_test_piece_detail(test_piece_id):
+def get_test_piece_detail(test_piece_id: str) -> str:
     search_fields = ['piece-name', 'piece-composer', 'piece-arranger']
     shortcut_options = []
     search_hint = '曲名 / 作曲者 / 編曲者'

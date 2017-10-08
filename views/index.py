@@ -5,7 +5,7 @@ INDEX_MOD = Blueprint('index_mod', __name__)
 
 
 @INDEX_MOD.route('/')
-def index():
+def index() -> str:
     return render_template(
         'index.html',
         current_user=flask_login.current_user)

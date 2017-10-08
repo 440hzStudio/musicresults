@@ -8,6 +8,7 @@ run: venv
 test:
 	pip install -r requirements.test.txt > /dev/null
 
+lint: pylint
 pylint:
 	pylint *.py **/*.py --rcfile pylintrc
 

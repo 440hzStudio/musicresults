@@ -1,3 +1,5 @@
+from typing import List, Tuple, Optional
+
 from flask import Blueprint, render_template
 from models import Venue, Contest
 
@@ -15,7 +17,7 @@ def all_venues() -> str:
         venue.contest_count = Contest.query.filter_by(venue_id=venue.id).count()
 
     search_fields = ['venue-name', 'venue-location']
-    shortcut_options = []  # ['北區', '中區', '南區', '海外']
+    shortcut_options: List[str] = []  # ['北區', '中區', '南區', '海外']
     search_hint = '場地名稱 / 城市'
     return render_template(
         'venues.html',
@@ -28,7 +30,7 @@ def all_venues() -> str:
 
 
 @VENUE_MOD.route('/<venue_id>')
-def get_venue_detail(venue_id: str) -> str:
+def get_venue_detail(venue_id: str) -> Tuple[str, Optional[int]]:
     if not venue_id.isdigit():
         return render_template(
             'error.html',

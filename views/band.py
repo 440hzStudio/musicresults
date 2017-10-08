@@ -1,4 +1,5 @@
 from collections import defaultdict
+from typing import List, DefaultDict
 
 from flask import Blueprint, render_template
 from models import Constant, Band, ContestDetail, Contest
@@ -7,7 +8,7 @@ BAND_MOD = Blueprint('band_mod', __name__)
 
 
 def get_winning_records() -> defaultdict:
-    winning_records = defaultdict(list)
+    winning_records: DefaultDict[str, List[str]] = defaultdict(list)
     contests = Contest.query.all()
     for contest in contests:
         record = ContestDetail.query.filter_by(position=1, contest_id=contest.id).join(Contest).order_by(Contest.date.desc()).first()

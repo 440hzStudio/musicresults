@@ -20,12 +20,10 @@ def all_contests_moe() -> str:
     contests = db_session.query(ContestType, func.count(Contest.id)).outerjoin(Contest).group_by(ContestType.id).filter((ContestType.parent_id == 1) | (ContestType.id == 1))
 
     search_fields = ['contest-location']
-    shortcut_options = []
     search_hint = '比賽名稱'
     return render_template(
         'contest-moe-list.html',
         search_fields=search_fields,
-        shortcut_options=shortcut_options,
         search_hint=search_hint,
         ascending=True,
         contests=contests,
@@ -90,13 +88,9 @@ def all_contests_moe_location_area(contest_type_id: str, area_id: str, band_type
     breadcrumb['parent'].append({'path': '/contest/moe/{}'.format(contest_type_id), 'name': contest_name})
     breadcrumb['current'] = {'name': contest_area}
 
-    search_fields = []
-    shortcut_options = []
     search_hint = ''
     return render_template(
         'contest-history.html',
-        search_fields=search_fields,
-        shortcut_options=shortcut_options,
         search_hint=search_hint,
         ascending=False,
         breadcrumb=breadcrumb,
@@ -123,13 +117,9 @@ def get_contest_detail(contest_type_id: str, area_id: str, band_type: str, categ
     breadcrumb['parent'].append({'path': '/contest/moe/%s/%s/%s/%s' % (contest_type_id, area_id, band_type, category), 'name': contest_area})
     breadcrumb['current'] = {'name': year}
 
-    search_fields = []
-    shortcut_options = []
     search_hint = ''
     return render_template(
         'contest-detail.html',
-        search_fields=search_fields,
-        shortcut_options=shortcut_options,
         search_hint=search_hint,
         ascending=True,
         sortme=0,

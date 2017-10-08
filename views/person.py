@@ -17,12 +17,10 @@ def all_people() -> str:
     conductors = db_session.query(Person, func.count(ContestDetail.id), func.count(func.NULLIF(ContestDetail.position != 1, True))).outerjoin(ContestDetail).group_by(Person.id)
 
     search_fields = ['conductor-name']
-    shortcut_options = []
     search_hint = '指揮姓名'
     return render_template(
         'conductors.html',
         search_fields=search_fields,
-        shortcut_options=shortcut_options,
         search_hint=search_hint,
         ascending=True,
         breadcrumb=breadcrumb,
@@ -31,8 +29,6 @@ def all_people() -> str:
 
 @PERSON_MOD.route('/conductor/<conductor_id>')
 def get_conductor_info(conductor_id: str) -> str:
-    search_fields = []
-    shortcut_options = []
     search_hint = ''
 
     conductor = Person.query.filter_by(id=conductor_id).first()
@@ -45,8 +41,6 @@ def get_conductor_info(conductor_id: str) -> str:
 
     return render_template(
         'conductor.html',
-        search_fields=search_fields,
-        shortcut_options=shortcut_options,
         search_hint=search_hint,
         ascending=True,
         conductor=conductor,

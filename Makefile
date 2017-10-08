@@ -14,6 +14,7 @@ pylint:
 mypy:
 	mypy . --config-file mypy.ini
 
+pep8: pycodestyle
 pycodestyle:
 	pycodestyle *.py **/*.py --statistics --config=pycodestyle.ini
 

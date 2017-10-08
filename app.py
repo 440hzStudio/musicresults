@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# pylint: skip-file
 
 # This file may be used instead of Apache mod_wsgi to run your python
 # web application in a different framework.    A few examples are
@@ -14,10 +15,7 @@ try:
     python_version = "python" + str(sys.version_info[0]) + "." + str(sys.version_info[1])
     os.environ['PYTHON_EGG_CACHE'] = os.path.join(virtenv, 'lib', python_version, 'site-packages')
     virtualenv = os.path.join(virtenv, 'bin', 'activate_this.py')
-    if (sys.version_info[0] < 3):
-        execfile(virtualenv, dict(__file__=virtualenv))
-    else:
-        exec(open(virtualenv).read(), dict(__file__=virtualenv))
+    exec(open(virtualenv).read(), dict(__file__=virtualenv))
 except IOError:
     pass
 

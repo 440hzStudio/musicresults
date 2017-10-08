@@ -1,16 +1,15 @@
 from flask import Blueprint, render_template
 from models import Venue, Contest
 
-venue_mod = Blueprint('venue_mod', __name__)
+VENUE_MOD = Blueprint('venue_mod', __name__)
 
 
-@venue_mod.route('/')
+@VENUE_MOD.route('/')
 def all_venues():
     breadcrumb = dict()
     breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
     breadcrumb['current'] = {'name': '場地'}
 
-    venues = []
     venues = Venue.query.all()
     for venue in venues:
         venue.contest_count = Contest.query.filter_by(venue_id=venue.id).count()
@@ -28,10 +27,13 @@ def all_venues():
         venues=venues)
 
 
-@venue_mod.route('/<venue_id>')
-def venue(venue_id):
+@VENUE_MOD.route('/<venue_id>')
+def get_venue_detail(venue_id):
     if not venue_id.isdigit():
-        raise 400
+        return render_template(
+            'error.html',
+            title='Invalid venue ID',
+            reason=f'[{venue_id}] is not a valid format.'), 400
 
     venue = Venue.query.filter_by(id=venue_id).first()
     contest_record = Contest.query.filter_by(venue_id=venue_id).all()

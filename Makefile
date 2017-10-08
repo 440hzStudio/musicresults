@@ -8,12 +8,14 @@ run: venv
 test:
 	pip install -r requirements.test.txt > /dev/null
 
+lint: pylint
 pylint:
 	pylint *.py **/*.py --rcfile pylintrc
 
 mypy:
 	mypy . --config-file mypy.ini
 
+pep8: pycodestyle
 pycodestyle:
 	pycodestyle *.py **/*.py --statistics --config=pycodestyle.ini
 

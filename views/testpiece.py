@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template
 from models import TestPiece, ContestDetail, Contest
 
-testpiece_mod = Blueprint('testpiece_mod', __name__)
+TESTPIECE_MOD = Blueprint('testpiece_mod', __name__)
 
 
-@testpiece_mod.route('/')
+@TESTPIECE_MOD.route('/')
 def all_test_pieces():
     breadcrumb = dict()
     breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
@@ -29,8 +29,8 @@ def all_test_pieces():
         breadcrumb=breadcrumb)
 
 
-@testpiece_mod.route('/<test_piece_id>')
-def test_piece(test_piece_id):
+@TESTPIECE_MOD.route('/<test_piece_id>')
+def get_test_piece_detail(test_piece_id):
     search_fields = ['piece-name', 'piece-composer', 'piece-arranger']
     shortcut_options = []
     search_hint = '曲名 / 作曲者 / 編曲者'

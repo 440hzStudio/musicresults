@@ -1,32 +1,34 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, render_template, request, url_for, redirect, flash, jsonify
-from database import db_session
 import datetime
 import hashlib
 import binascii
+
+from flask import Blueprint, render_template, request, url_for, redirect, flash, jsonify
 from validate_email import validate_email
 import flask_login
-from models import User, Constant
 
-user_mod = Blueprint('user_mod', __name__)
-password_hash = None
+from database import get_db_session
+from models import User
+
+USER_MOD = Blueprint('user_mod', __name__)
+PASSWORD_HASH = ''
 
 
-def set_hash(hash):
-    global password_hash
-    password_hash = hash
+def set_hash(password_hash):
+    global PASSWORD_HASH  # pylint: disable=global-statement
+    PASSWORD_HASH = password_hash
 
 
 def hash_password(password):
-    dk = hashlib.pbkdf2_hmac(
+    data = hashlib.pbkdf2_hmac(
         'sha256',
         bytearray(password, 'ascii'),
-        bytearray(password_hash, 'ascii'),
+        bytearray(PASSWORD_HASH, 'ascii'),
         100000)
-    return binascii.hexlify(dk).decode('ascii')
+    return binascii.hexlify(data).decode('ascii')
 
 
-@user_mod.route('/info', methods=['GET', 'POST'])
+@USER_MOD.route('/info', methods=['GET', 'POST'])
 @flask_login.login_required
 def info():
     if not flask_login.current_user.is_teacher():
@@ -55,7 +57,7 @@ def info():
                 messages.append(('請選擇學校', 'danger'))
 
             if messages:
-                raise Exception
+                raise ValueError
 
             if request.form['password']:
                 user.password = hash_password(request.form['password'])
@@ -64,10 +66,10 @@ def info():
                 request.form['phone1'], request.form['phone2'], request.form['phone3'])
             user.cell_phone = request.form['cellphone']
             user.school_id = request.form['school']
-        except Exception:
+        except ValueError:
             status = 'error'
         else:
-            db_session.commit()
+            get_db_session().commit()
             status = 'ok'
             flash('更新成功', 'success')
             url = url_for('user_mod.info')
@@ -75,12 +77,11 @@ def info():
 
     return render_template(
         'user_info.html',
-        class_level=Constant.class_level,
         current_user=flask_login.current_user
     )
 
 
-@user_mod.route('/register', methods=['GET', 'POST'])
+@USER_MOD.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         status = ''
@@ -114,7 +115,7 @@ def register():
                 messages.append(('請選擇學校', 'danger'))
 
             if messages:
-                raise Exception
+                raise ValueError
 
             user = User(request.form['username'], request.form['email'])
             user.realname = request.form['name']
@@ -125,31 +126,29 @@ def register():
             user.school_id = request.form['school']
             user.create_time = datetime.datetime.now()
             user.type = 'teacher'
-        except Exception:
+        except ValueError:
             status = 'error'
         else:
+            db_session = get_db_session()
             db_session.add(user)
             db_session.commit()
             status = 'ok'
             flash('註冊成功', 'success')
             url = url_for('user_mod.login')
         return jsonify(status=status, messages=messages, url=url)
-    else:
-        return render_template(
-            'user_register.html',
-            class_level=Constant.class_level,
-            current_user=flask_login.current_user
-        )
+    return render_template(
+        'user_register.html',
+        current_user=flask_login.current_user
+    )
 
 
-@user_mod.route('/login', methods=['GET', 'POST'])
+@USER_MOD.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
         if flask_login.current_user.is_authenticated:
             return redirect(url_for('index'))
         return render_template(
             'user_login.html',
-            class_level=Constant.class_level,
             current_user=flask_login.current_user
         )
 
@@ -172,7 +171,7 @@ def login():
     return jsonify(status=status, messages=messages, url=url)
 
 
-@user_mod.route('/logout')
+@USER_MOD.route('/logout')
 @flask_login.login_required
 def logout():
     flask_login.logout_user()
@@ -185,6 +184,6 @@ def is_user_exists(username):
     return False
 
 
-@user_mod.route('/exists/<username>')
+@USER_MOD.route('/exists/<username>')
 def exists(username):
     return jsonify(is_user_exists(username))

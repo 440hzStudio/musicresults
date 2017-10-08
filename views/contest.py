@@ -1,14 +1,16 @@
-from flask import Blueprint, render_template
-from models import ContestType, Contest, ContestDetail, TestPiece
 import datetime
 
-contest_mod = Blueprint('contest_mod', __name__)
+from flask import Blueprint, render_template
+from models import ContestType, Contest, ContestDetail, TestPiece
+
+CONTEST_MOD = Blueprint('contest_mod', __name__)
 
 
-@contest_mod.route('/moe/')
+@CONTEST_MOD.route('/moe/')
 def all_contests_moe():
     from sqlalchemy import func
-    from database import db_session
+    from database import get_db_session
+    db_session = get_db_session()
 
     breadcrumb = dict()
     breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
@@ -30,20 +32,20 @@ def all_contests_moe():
         breadcrumb=breadcrumb)
 
 
-@contest_mod.route('/moe/<contest_type_id>')
+@CONTEST_MOD.route('/moe/<contest_type_id>')
 def all_contests_moe_location(contest_type_id):
-    contest = ContestType.query.filter_by(id=contest_type_id).first()
+    contest_info = ContestType.query.filter_by(id=contest_type_id).first()
 
-    contest.contests = Contest.query.filter_by(contest_type_id=contest.id).group_by(Contest.area_id, Contest.category, Contest.band_type).all()
+    contest_info.contests = Contest.query.filter_by(contest_type_id=contest_info.id).group_by(Contest.area_id, Contest.category, Contest.band_type).all()
 
-    for c in contest.contests:
-        c.champion = ContestDetail.query.join(Contest).join(ContestType).filter(ContestType.id == contest.id, Contest.area_id == c.area_id, Contest.band_type == c.band_type, ContestDetail.position == 1).order_by(Contest.date.desc()).first()
+    for contest in contest_info.contests:
+        contest.champion = ContestDetail.query.join(Contest).join(ContestType).filter(ContestType.id == contest_info.id, Contest.area_id == contest.area_id, Contest.band_type == contest.band_type, ContestDetail.position == 1).order_by(Contest.date.desc()).first()
 
     breadcrumb = dict()
     breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
     breadcrumb['parent'].append({'name': '比賽'})
     breadcrumb['parent'].append({'path': '/contest/moe/', 'name': '學生音樂比賽'})
-    breadcrumb['current'] = {'name': contest.name}
+    breadcrumb['current'] = {'name': contest_info.name}
 
     meta = dict()
     meta['has_area'] = True
@@ -60,11 +62,11 @@ def all_contests_moe_location(contest_type_id):
         search_hint=search_hint,
         ascending=True,
         breadcrumb=breadcrumb,
-        contest=contest,
+        contest=contest_info,
         meta=meta)
 
 
-@contest_mod.route('/moe/<contest_type_id>/<area_id>/<band_type>/<category>')
+@CONTEST_MOD.route('/moe/<contest_type_id>/<area_id>/<band_type>/<category>')
 def all_contests_moe_location_area(contest_type_id, area_id, band_type, category):
     contests = Contest.query.filter_by(contest_type_id=contest_type_id, area_id=area_id, band_type=band_type, category=category).all()
 
@@ -103,8 +105,8 @@ def all_contests_moe_location_area(contest_type_id, area_id, band_type, category
         contest_area=contest_area)
 
 
-@contest_mod.route('/moe/<contest_type_id>/<area_id>/<band_type>/<category>/<year>')
-def all_contests_moe_location_area_group_category_year(contest_type_id, area_id, band_type, category, year):
+@CONTEST_MOD.route('/moe/<contest_type_id>/<area_id>/<band_type>/<category>/<year>')
+def get_contest_detail(contest_type_id, area_id, band_type, category, year):
     contest = Contest.query.filter(Contest.contest_type_id == contest_type_id, Contest.area_id == area_id, Contest.band_type == band_type, Contest.category == category, Contest.date > datetime.datetime.strptime(year, '%Y'), Contest.date < datetime.datetime.strptime(str(int(year) + 1), '%Y')).first()
 
     contest.test_pieces = TestPiece.query.filter(TestPiece.contests.any(id=contest.id)).all()

@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template
-from models import Constant, Band, ContestDetail, Contest
 from collections import defaultdict
 
-band_mod = Blueprint('band_mod', __name__)
+from flask import Blueprint, render_template
+from models import Constant, Band, ContestDetail, Contest
+
+BAND_MOD = Blueprint('band_mod', __name__)
 
 
 def get_winning_records():
@@ -15,8 +16,8 @@ def get_winning_records():
     return winning_records
 
 
-@band_mod.route('/')
-def all_bands():
+@BAND_MOD.route('/')
+def get_all_band_list():
     breadcrumb = dict()
     breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
     breadcrumb['current'] = {'name': '樂團'}
@@ -40,8 +41,8 @@ def all_bands():
         bands=all_bands)
 
 
-@band_mod.route('/<band_id>')
-def band(band_id):
+@BAND_MOD.route('/<band_id>')
+def get_band_detail(band_id):
     band = Band.query.filter_by(id=band_id).first()
     band.trophies = get_winning_records()[band.id]
     breadcrumb = dict()

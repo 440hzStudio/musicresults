@@ -30,7 +30,7 @@ def all_test_pieces():
 
 
 @TESTPIECE_MOD.route('/<test_piece_id>')
-def test_piece(test_piece_id):
+def get_test_piece_detail(test_piece_id):
     search_fields = ['piece-name', 'piece-composer', 'piece-arranger']
     shortcut_options = []
     search_hint = '曲名 / 作曲者 / 編曲者'

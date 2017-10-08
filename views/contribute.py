@@ -14,13 +14,13 @@ def contribute():
 
     if request.method == 'POST':
         detail_lists = {}
-        for d in detail_items:
-            detail_lists[d] = request.form.getlist('%s[]' % d)
+        for item in detail_items:
+            detail_lists[item] = request.form.getlist('%s[]' % item)
 
         for i in range(len(detail_lists[detail_items[0]])):
             print(i)
-            for d in detail_lists:
-                print(d, detail_lists[d][i])
+            for detail in detail_lists:
+                print(detail, detail_lists[detail][i])
             print()
         flash('成功新增資料', 'success')
 

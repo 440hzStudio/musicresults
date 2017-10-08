@@ -17,7 +17,7 @@ def get_winning_records():
 
 
 @BAND_MOD.route('/')
-def all_bands():
+def get_all_band_list():
     breadcrumb = dict()
     breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
     breadcrumb['current'] = {'name': '樂團'}
@@ -42,7 +42,7 @@ def all_bands():
 
 
 @BAND_MOD.route('/<band_id>')
-def band(band_id):
+def get_band_detail(band_id):
     band = Band.query.filter_by(id=band_id).first()
     band.trophies = get_winning_records()[band.id]
     breadcrumb = dict()

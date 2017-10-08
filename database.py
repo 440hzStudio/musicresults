@@ -4,8 +4,8 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from flaskext.mysql import MySQL
 
-db_session = None
-Base = declarative_base()
+DB_SESSION = None
+BASE = declarative_base()
 
 
 def init_db(app):
@@ -14,8 +14,7 @@ def init_db(app):
     # you will have to import them first before calling init_db()
     import models
 
-    global db_session
-    global Base
+    global DB_SESSION  # pylint: disable=global-statement
 
     if app.config.get('DATABASE') == 'mysql':
         mysql = MySQL()
@@ -29,11 +28,20 @@ def init_db(app):
     elif app.config.get('DATABASE') == 'sqlite':
         engine = create_engine('sqlite:///musicresults.db', convert_unicode=True)
 
-    db_session = scoped_session(
+    DB_SESSION = scoped_session(
         sessionmaker(
             autocommit=False,
             autoflush=False,
             bind=engine
         ))
-    Base.metadata.create_all(bind=engine)
-    Base.query = db_session.query_property()
+    base = get_db_base_cls()
+    base.metadata.create_all(bind=engine)
+    base.query = DB_SESSION.query_property()
+
+
+def get_db_session():
+    return DB_SESSION
+
+
+def get_db_base_cls():
+    return BASE

@@ -3,13 +3,13 @@ from models import Venue, Contest
 
 VENUE_MOD = Blueprint('venue_mod', __name__)
 
+
 @VENUE_MOD.route('/')
 def all_venues():
     breadcrumb = dict()
     breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
     breadcrumb['current'] = {'name': '場地'}
 
-    venues = []
     venues = Venue.query.all()
     for venue in venues:
         venue.contest_count = Contest.query.filter_by(venue_id=venue.id).count()
@@ -28,7 +28,7 @@ def all_venues():
 
 
 @VENUE_MOD.route('/<venue_id>')
-def venue(venue_id):
+def get_venue_detail(venue_id):
     if not venue_id.isdigit():
         return render_template(
             'error.html',

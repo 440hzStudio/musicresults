@@ -1,29 +1,31 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, render_template, request, url_for, redirect, flash, jsonify
-from database import db_session
 import datetime
 import hashlib
 import binascii
+
+from flask import Blueprint, render_template, request, url_for, redirect, flash, jsonify
 from validate_email import validate_email
 import flask_login
+
+from database import get_db_session
 from models import User, Constant
 
 USER_MOD = Blueprint('user_mod', __name__)
-password_hash = None
+PASSWORD_HASH = ''
 
 
-def set_hash(hash):
-    global password_hash
-    password_hash = hash
+def set_hash(password_hash):
+    global PASSWORD_HASH
+    PASSWORD_HASH = password_hash
 
 
 def hash_password(password):
-    dk = hashlib.pbkdf2_hmac(
+    data = hashlib.pbkdf2_hmac(
         'sha256',
         bytearray(password, 'ascii'),
-        bytearray(password_hash, 'ascii'),
+        bytearray(PASSWORD_HASH, 'ascii'),
         100000)
-    return binascii.hexlify(dk).decode('ascii')
+    return binascii.hexlify(data).decode('ascii')
 
 
 @USER_MOD.route('/info', methods=['GET', 'POST'])
@@ -55,7 +57,7 @@ def info():
                 messages.append(('請選擇學校', 'danger'))
 
             if messages:
-                raise Exception
+                raise ValueError
 
             if request.form['password']:
                 user.password = hash_password(request.form['password'])
@@ -64,10 +66,10 @@ def info():
                 request.form['phone1'], request.form['phone2'], request.form['phone3'])
             user.cell_phone = request.form['cellphone']
             user.school_id = request.form['school']
-        except Exception:
+        except ValueError:
             status = 'error'
         else:
-            db_session.commit()
+            get_db_session().commit()
             status = 'ok'
             flash('更新成功', 'success')
             url = url_for('user_mod.info')
@@ -128,6 +130,7 @@ def register():
         except Exception:
             status = 'error'
         else:
+            db_session = get_db_session()
             db_session.add(user)
             db_session.commit()
             status = 'ok'

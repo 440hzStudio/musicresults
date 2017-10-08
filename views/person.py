@@ -7,7 +7,9 @@ PERSON_MOD = Blueprint('person_mod', __name__)
 @PERSON_MOD.route('/conductor/')
 def all_people():
     from sqlalchemy import func
-    from database import db_session
+    from database import get_db_session
+    db_session = get_db_session()
+
     breadcrumb = dict()
     breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
     breadcrumb['current'] = {'name': '指揮'}
@@ -28,7 +30,7 @@ def all_people():
 
 
 @PERSON_MOD.route('/conductor/<conductor_id>')
-def conductor_info(conductor_id):
+def get_conductor_info(conductor_id):
     search_fields = []
     shortcut_options = []
     search_hint = ''

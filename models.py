@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0103
 from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey, Boolean, Float, Table
 from sqlalchemy.orm import relationship
-from database import Base
+from database import get_db_base_cls
+
+
+ORM_BASE = get_db_base_cls()
 
 
 # http://stackoverflow.com/questions/5756559/how-to-build-many-to-many-relations-using-sqlalchemy-a-good-example
-SetPieceList = Table(
-    'setpiecelist', Base.metadata,
+SET_PIECE_LIST = Table(
+    'setpiecelist', ORM_BASE.metadata,
     Column('contest_id', Integer, ForeignKey('contests.id')),
     Column('set_piece_id', Integer, ForeignKey('test_pieces.id')))
 
@@ -15,13 +19,13 @@ class Constant(object):
     BAND_TYPE = ['社會業餘', '大專', '高中職', '國中', '國小']
 
 
-class Area(Base):
+class Area(ORM_BASE):
     __tablename__ = 'areas'
     id = Column(Integer, primary_key=True)
     name = Column(String(50), unique=True)
 
 
-class Band(Base):
+class Band(ORM_BASE):
     __tablename__ = 'bands'
     id = Column(Integer, primary_key=True)
     name = Column(String(50), unique=True)
@@ -33,7 +37,7 @@ class Band(Base):
     description = Column(Text)
 
 
-class Contest(Base):
+class Contest(ORM_BASE):
     __tablename__ = 'contests'
     id = Column(Integer, primary_key=True)
     date = Column(DateTime)
@@ -46,7 +50,7 @@ class Contest(Base):
     venue_id = Column(Integer, ForeignKey('venues.id'))
     venue = relationship('Venue')
     band_type = Column(String(50))
-    set_pieces = relationship('TestPiece', secondary=SetPieceList, backref='Contest')
+    set_pieces = relationship('TestPiece', secondary=SET_PIECE_LIST, backref='Contest')
 
     def get_fullname(self, prefix=True, ctype=True, area=True, category=True, band_type=True):
         return '{}{}{}{}{}'.format(
@@ -57,7 +61,7 @@ class Contest(Base):
             ' {} 組'.format(self.category) if category else '')
 
 
-class ContestDetail(Base):
+class ContestDetail(ORM_BASE):
     __tablename__ = 'contest_details'
     id = Column(Integer, primary_key=True)
     band_id = Column(Integer, ForeignKey('bands.id'))
@@ -80,7 +84,7 @@ class ContestDetail(Base):
     misc = Column(Text)
 
 
-class ContestType(Base):
+class ContestType(ORM_BASE):
     __tablename__ = 'contest_types'
     id = Column(Integer, primary_key=True)
     name = Column(String(50), unique=True)
@@ -88,27 +92,27 @@ class ContestType(Base):
     parent = relationship('ContestType')
 
 
-class Location(Base):
+class Location(ORM_BASE):
     __tablename__ = 'locations'
     id = Column(Integer, primary_key=True)
     name = Column(String(50), unique=True)
 
 
-class Person(Base):
+class Person(ORM_BASE):
     __tablename__ = 'persons'
     id = Column(Integer, primary_key=True)
     name = Column(String(50), unique=True)
     biography = Column(Text)
 
 
-class Ranking(Base):
+class Ranking(ORM_BASE):
     __tablename__ = 'rankings'
     id = Column(Integer, primary_key=True)
     name = Column(String(50), unique=True)
     priority = Column(Integer)
 
 
-class TestPiece(Base):
+class TestPiece(ORM_BASE):
     __tablename__ = 'test_pieces'
     id = Column(Integer, primary_key=True)
     name = Column(String(50), unique=True)
@@ -119,10 +123,10 @@ class TestPiece(Base):
     year = Column(Integer)
     description = Column(Text)
     misc = Column(Text)
-    contests = relationship('Contest', secondary=SetPieceList, backref='TestPiece')
+    contests = relationship('Contest', secondary=SET_PIECE_LIST, backref='TestPiece')
 
 
-class Venue(Base):
+class Venue(ORM_BASE):
     __tablename__ = 'venues'
     id = Column(Integer, primary_key=True)
     name = Column(String(50), unique=True)
@@ -131,7 +135,7 @@ class Venue(Base):
     address = Column(Text)
 
 
-class User(Base):
+class User(ORM_BASE):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     username = Column(String(50), unique=True)
@@ -140,8 +144,8 @@ class User(Base):
     email = Column(String(120), unique=True)
 
     create_time = Column(DateTime)
-    type = Column(String(50))
-    is_active = Column(Boolean)
+    user_type = Column(String(50))
+    active = Column(Boolean)
 
     def __init__(self, username=None, email=None):
         self.username = username

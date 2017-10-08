@@ -2,10 +2,7 @@
 # pylint: disable=C0103
 from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey, Boolean, Float, Table
 from sqlalchemy.orm import relationship
-from database import get_db_base_cls
-
-
-ORM_BASE = get_db_base_cls()
+from database import BASE as ORM_BASE
 
 
 # http://stackoverflow.com/questions/5756559/how-to-build-many-to-many-relations-using-sqlalchemy-a-good-example

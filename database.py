@@ -35,14 +35,10 @@ def init_db(app: Flask) -> None:
             autoflush=False,
             bind=engine
         ))
-    base = get_db_base_cls()
+    base = BASE
     base.metadata.create_all(bind=engine)
     base.query = DB_SESSION.query_property()
 
 
 def get_db_session() -> scoped_session:
     return DB_SESSION
-
-
-def get_db_base_cls() -> declarative_base:
-    return BASE

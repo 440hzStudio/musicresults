@@ -29,7 +29,6 @@ def contribute() -> str:
 
     categories = ContestType.query.filter_by(parent_id=None).all()
     for category in categories:
-        print(category)
         contests = ContestType.query.filter((ContestType.parent_id == category.id) | (ContestType.id == category.id)).all()
         category = {'name': category.name, 'contests': {contest_type.id: contest_type.name for contest_type in contests}}
         all_contest_categories.append(category)

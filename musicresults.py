@@ -29,10 +29,10 @@ LOGIN_MANAGER.init_app(APP)
 
 
 @APP.teardown_appcontext
-def shutdown_session(exception: Exception = None) -> None:
+def shutdown_session(_: Exception = None) -> None:
+    # shutdown sqlalchemy session
     from database import get_db_session
     get_db_session().remove()
-    print(exception)
 
 
 # @LOGIN_MANAGER.user_loader

@@ -19,9 +19,10 @@ def get_winning_records() -> defaultdict:
 
 @BAND_MOD.route('/')
 def get_all_band_list() -> str:
-    breadcrumb = dict()
-    breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
-    breadcrumb['current'] = {'name': '樂團'}
+    breadcrumb = [
+        {'path': '/', 'name': '首頁'},
+        {'name': '樂團'}
+    ]
 
     winning_records = get_winning_records()
 
@@ -46,10 +47,11 @@ def get_all_band_list() -> str:
 def get_band_detail(band_id: str) -> str:
     band = Band.query.filter_by(id=band_id).first()
     band.trophies = get_winning_records()[band.id]
-    breadcrumb = dict()
-    breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
-    breadcrumb['parent'].append({'path': '/band/', 'name': '樂團'})
-    breadcrumb['current'] = {'name': band.name}
+    breadcrumb = [
+        {'path': '/', 'name': '首頁'},
+        {'path': '/band/', 'name': '樂團'},
+        {'name': band.name}
+    ]
 
     band.contest_details = ContestDetail.query.filter_by(band_id=band.id).join(Contest).order_by(Contest.date.desc()).all()
 

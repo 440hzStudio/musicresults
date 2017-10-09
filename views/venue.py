@@ -8,9 +8,10 @@ VENUE_MOD = Blueprint('venue_mod', __name__)
 
 @VENUE_MOD.route('/')
 def all_venues() -> str:
-    breadcrumb = dict()
-    breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
-    breadcrumb['current'] = {'name': '場地'}
+    breadcrumb = [
+        {'path': '/', 'name': '首頁'},
+        {'name': '場地'}
+    ]
 
     venues = Venue.query.all()
     for venue in venues:
@@ -40,10 +41,11 @@ def get_venue_detail(venue_id: str) -> Tuple[str, Optional[int]]:
     venue = Venue.query.filter_by(id=venue_id).first()
     contest_record = Contest.query.filter_by(venue_id=venue_id).all()
 
-    breadcrumb = dict()
-    breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
-    breadcrumb['parent'].append({'path': '/venue/', 'name': '場地'})
-    breadcrumb['current'] = {'name': venue.name}
+    breadcrumb = [
+        {'path': '/', 'name': '首頁'},
+        {'path': '/venue/', 'name': '場地'},
+        {'name': venue.name}
+    ]
 
     return render_template(
         'venue.html',

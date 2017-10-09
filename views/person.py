@@ -10,9 +10,10 @@ def all_people() -> str:
     from database import get_db_session
     db_session = get_db_session()
 
-    breadcrumb = dict()
-    breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
-    breadcrumb['current'] = {'name': '指揮'}
+    breadcrumb = [
+        {'path': '/', 'name': '首頁'},
+        {'name': '指揮'}
+    ]
 
     conductors = db_session.query(Person, func.count(ContestDetail.id), func.count(func.NULLIF(ContestDetail.position != 1, True))).outerjoin(ContestDetail).group_by(Person.id)
 
@@ -34,10 +35,11 @@ def get_conductor_info(conductor_id: str) -> str:
     conductor = Person.query.filter_by(id=conductor_id).first()
     contest_details = ContestDetail.query.filter_by(conductor_id=conductor_id).all()
 
-    breadcrumb = dict()
-    breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
-    breadcrumb['parent'].append({'path': '/person/conductor/', 'name': '指揮'})
-    breadcrumb['current'] = {'name': conductor.name}
+    breadcrumb = [
+        {'path': '/', 'name': '首頁'},
+        {'path': '/person/conductor/', 'name': '指揮'},
+        {'name': conductor.name}
+    ]
 
     return render_template(
         'conductor.html',

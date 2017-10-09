@@ -6,9 +6,10 @@ TESTPIECE_MOD = Blueprint('testpiece_mod', __name__)
 
 @TESTPIECE_MOD.route('/')
 def all_test_pieces() -> str:
-    breadcrumb = dict()
-    breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
-    breadcrumb['current'] = {'name': '比賽曲'}
+    breadcrumb = [
+        {'path': '/', 'name': '首頁'},
+        {'name': '比賽曲'}
+    ]
 
     search_fields = ['piece-name', 'piece-composer', 'piece-arranger']
     search_hint = '曲名 / 作曲者 / 編曲者'
@@ -36,10 +37,11 @@ def get_test_piece_detail(test_piece_id: str) -> str:
     test_piece.set_piece_count = Contest.query.filter_by(venue_id=test_piece.id).count()
     test_piece.own_choice_count = ContestDetail.query.filter_by(own_choice_id=test_piece.id).count()
 
-    breadcrumb = dict()
-    breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
-    breadcrumb['parent'].append({'path': '/test-piece/', 'name': '比賽曲'})
-    breadcrumb['current'] = {'name': test_piece.name}
+    breadcrumb = [
+        {'path': '/', 'name': '首頁'},
+        {'path': '/test-piece/', 'name': '比賽曲'},
+        {'name': test_piece.name}
+    ]
 
     test_piece_history = Contest.query.filter(Contest.set_pieces.any(id=test_piece.id)).all()
 

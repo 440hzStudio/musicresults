@@ -1,4 +1,5 @@
 from collections import defaultdict
+from typing import List, DefaultDict
 
 from flask import Blueprint, render_template
 from models import Constant, Band, ContestDetail, Contest
@@ -6,8 +7,8 @@ from models import Constant, Band, ContestDetail, Contest
 BAND_MOD = Blueprint('band_mod', __name__)
 
 
-def get_winning_records():
-    winning_records = defaultdict(list)
+def get_winning_records() -> defaultdict:
+    winning_records: DefaultDict[str, List[str]] = defaultdict(list)
     contests = Contest.query.all()
     for contest in contests:
         record = ContestDetail.query.filter_by(position=1, contest_id=contest.id).join(Contest).order_by(Contest.date.desc()).first()
@@ -17,10 +18,11 @@ def get_winning_records():
 
 
 @BAND_MOD.route('/')
-def get_all_band_list():
-    breadcrumb = dict()
-    breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
-    breadcrumb['current'] = {'name': '樂團'}
+def get_all_band_list() -> str:
+    breadcrumb = [
+        {'path': '/', 'name': '首頁'},
+        {'name': '樂團'}
+    ]
 
     winning_records = get_winning_records()
 
@@ -42,13 +44,14 @@ def get_all_band_list():
 
 
 @BAND_MOD.route('/<band_id>')
-def get_band_detail(band_id):
+def get_band_detail(band_id: str) -> str:
     band = Band.query.filter_by(id=band_id).first()
     band.trophies = get_winning_records()[band.id]
-    breadcrumb = dict()
-    breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
-    breadcrumb['parent'].append({'path': '/band/', 'name': '樂團'})
-    breadcrumb['current'] = {'name': band.name}
+    breadcrumb = [
+        {'path': '/', 'name': '首頁'},
+        {'path': '/band/', 'name': '樂團'},
+        {'name': band.name}
+    ]
 
     band.contest_details = ContestDetail.query.filter_by(band_id=band.id).join(Contest).order_by(Contest.date.desc()).all()
 

@@ -3,10 +3,11 @@ from datetime import timedelta
 
 from flask import Flask, url_for, redirect, session, flash
 import flask_login
+from werkzeug.wrappers import Response
 
 from database import init_db
 # from views.user import user_mod, set_hash
-from models import User
+# from models import User
 import views
 
 APP = Flask(__name__)
@@ -28,27 +29,27 @@ LOGIN_MANAGER.init_app(APP)
 
 
 @APP.teardown_appcontext
-def shutdown_session(exception=None):
+def shutdown_session(exception: Exception = None) -> None:
     from database import get_db_session
     get_db_session().remove()
     print(exception)
 
 
-@LOGIN_MANAGER.user_loader
-def user_loader(username):
-    uid = '_'.join(username.split('_')[1:])
-    user = None
-
-    if username.startswith('user'):
-        user = User.filter_by(username=uid).first()
-    # elif username.startswith('tester'):
-    #     user = Tester.filter_by(id=uid).first()
-
-    return user
+# @LOGIN_MANAGER.user_loader
+# def user_loader(username: str):
+#     uid = '_'.join(username.split('_')[1:])
+#     user = None
+#
+#     if username.startswith('user'):
+#         user = User.filter_by(username=uid).first()
+#     elif username.startswith('tester'):
+#         user = Tester.filter_by(id=uid).first()
+#
+#     return user
 
 
 @APP.before_request
-def make_session_permanent():
+def make_session_permanent() -> None:
     session.permanent = True
     if flask_login.current_user.is_authenticated and flask_login.current_user.is_admin():
         APP.permanent_session_lifetime = timedelta(minutes=60)
@@ -57,7 +58,7 @@ def make_session_permanent():
 
 
 @APP.errorhandler(401)
-def not_authorized(error):
+def not_authorized(error: Exception) -> Response:
     flash('請重新登入', 'info')
     print(error)
     return redirect(url_for('test_mod.login'))

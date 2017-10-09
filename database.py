@@ -3,12 +3,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from flaskext.mysql import MySQL
+from flask import Flask
 
 DB_SESSION = None
 BASE = declarative_base()
 
 
-def init_db(app):
+def init_db(app: Flask) -> None:
     # import all modules here that might define models so that
     # they will be registered properly on the metadata.  Otherwise
     # you will have to import them first before calling init_db()
@@ -34,14 +35,10 @@ def init_db(app):
             autoflush=False,
             bind=engine
         ))
-    base = get_db_base_cls()
+    base = BASE
     base.metadata.create_all(bind=engine)
     base.query = DB_SESSION.query_property()
 
 
-def get_db_session():
+def get_db_session() -> scoped_session:
     return DB_SESSION
-
-
-def get_db_base_cls():
-    return BASE

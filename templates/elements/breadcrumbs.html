@@ -1,19 +1,19 @@
 {% if breadcrumb is defined %}
 <ol class="breadcrumb">
-    {% for parent in breadcrumb['parent'] %}
+    {% for elem in breadcrumb[:-1] %}
     <li>
-    {% if parent['path'] %}
-    <a href="{{ parent['path'] }}">
+    {% if elem['path'] %}
+    <a href="{{ elem['path'] }}">
     {% endif %}
-    
-    {{ parent['name'] }}
-    
-    {% if parent['path'] %}
+
+    {{ elem['name'] }}
+
+    {% if elem['path'] %}
     </a>
     {% endif %}
     </li>
     {% endfor %}
 
-    <li class="active">{{ breadcrumb['current']['name'] }}</li>
+    <li class="active">{{ breadcrumb[-1]['name'] }}</li>
 </ol>
 {% endif %}

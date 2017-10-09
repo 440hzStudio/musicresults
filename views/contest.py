@@ -1,4 +1,5 @@
 import datetime
+from typing import Dict, Union
 
 from flask import Blueprint, render_template
 from models import ContestType, Contest, ContestDetail, TestPiece
@@ -7,25 +8,24 @@ CONTEST_MOD = Blueprint('contest_mod', __name__)
 
 
 @CONTEST_MOD.route('/moe/')
-def all_contests_moe():
+def all_contests_moe() -> str:
     from sqlalchemy import func
     from database import get_db_session
     db_session = get_db_session()
 
-    breadcrumb = dict()
-    breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
-    breadcrumb['parent'].append({'name': '比賽'})
-    breadcrumb['current'] = {'name': '學生音樂比賽'}
+    breadcrumb = [
+        {'path': '/', 'name': '首頁'},
+        {'name': '比賽'},
+        {'name': '學生音樂比賽'}
+    ]
 
     contests = db_session.query(ContestType, func.count(Contest.id)).outerjoin(Contest).group_by(ContestType.id).filter((ContestType.parent_id == 1) | (ContestType.id == 1))
 
     search_fields = ['contest-location']
-    shortcut_options = []
     search_hint = '比賽名稱'
     return render_template(
         'contest-moe-list.html',
         search_fields=search_fields,
-        shortcut_options=shortcut_options,
         search_hint=search_hint,
         ascending=True,
         contests=contests,
@@ -33,7 +33,7 @@ def all_contests_moe():
 
 
 @CONTEST_MOD.route('/moe/<contest_type_id>')
-def all_contests_moe_location(contest_type_id):
+def all_contests_moe_location(contest_type_id: str) -> str:
     contest_info = ContestType.query.filter_by(id=contest_type_id).first()
 
     contest_info.contests = Contest.query.filter_by(contest_type_id=contest_info.id).group_by(Contest.area_id, Contest.category, Contest.band_type).all()
@@ -41,13 +41,14 @@ def all_contests_moe_location(contest_type_id):
     for contest in contest_info.contests:
         contest.champion = ContestDetail.query.join(Contest).join(ContestType).filter(ContestType.id == contest_info.id, Contest.area_id == contest.area_id, Contest.band_type == contest.band_type, ContestDetail.position == 1).order_by(Contest.date.desc()).first()
 
-    breadcrumb = dict()
-    breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
-    breadcrumb['parent'].append({'name': '比賽'})
-    breadcrumb['parent'].append({'path': '/contest/moe/', 'name': '學生音樂比賽'})
-    breadcrumb['current'] = {'name': contest_info.name}
+    breadcrumb = [
+        {'path': '/', 'name': '首頁'},
+        {'name': '比賽'},
+        {'path': '/contest/moe/', 'name': '學生音樂比賽'},
+        {'name': contest_info.name}
+    ]
 
-    meta = dict()
+    meta: Dict[str, Union[bool, str]] = dict()
     meta['has_area'] = True
     meta['has_category'] = True
     meta['contest_id'] = 'moe'
@@ -67,7 +68,7 @@ def all_contests_moe_location(contest_type_id):
 
 
 @CONTEST_MOD.route('/moe/<contest_type_id>/<area_id>/<band_type>/<category>')
-def all_contests_moe_location_area(contest_type_id, area_id, band_type, category):
+def all_contests_moe_location_area(contest_type_id: str, area_id: str, band_type: str, category: str) -> str:
     contests = Contest.query.filter_by(contest_type_id=contest_type_id, area_id=area_id, band_type=band_type, category=category).all()
 
     for contest in contests:
@@ -83,20 +84,17 @@ def all_contests_moe_location_area(contest_type_id, area_id, band_type, category
     contest_name = contests[0].get_fullname(prefix=False, area=False, category=False, band_type=False)
     contest_area = contests[0].get_fullname(prefix=False, ctype=False)
 
-    breadcrumb = dict()
-    breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
-    breadcrumb['parent'].append({'name': '比賽'})
-    breadcrumb['parent'].append({'path': '/contest/moe/', 'name': '學生音樂比賽'})
-    breadcrumb['parent'].append({'path': '/contest/moe/{}'.format(contest_type_id), 'name': contest_name})
-    breadcrumb['current'] = {'name': contest_area}
+    breadcrumb = [
+        {'path': '/', 'name': '首頁'},
+        {'name': '比賽'},
+        {'path': '/contest/moe/', 'name': '學生音樂比賽'},
+        {'path': '/contest/moe/{}'.format(contest_type_id), 'name': contest_name},
+        {'name': contest_area}
+    ]
 
-    search_fields = []
-    shortcut_options = []
     search_hint = ''
     return render_template(
         'contest-history.html',
-        search_fields=search_fields,
-        shortcut_options=shortcut_options,
         search_hint=search_hint,
         ascending=False,
         breadcrumb=breadcrumb,
@@ -106,7 +104,7 @@ def all_contests_moe_location_area(contest_type_id, area_id, band_type, category
 
 
 @CONTEST_MOD.route('/moe/<contest_type_id>/<area_id>/<band_type>/<category>/<year>')
-def get_contest_detail(contest_type_id, area_id, band_type, category, year):
+def get_contest_detail(contest_type_id: str, area_id: str, band_type: str, category: str, year: str) -> str:
     contest = Contest.query.filter(Contest.contest_type_id == contest_type_id, Contest.area_id == area_id, Contest.band_type == band_type, Contest.category == category, Contest.date > datetime.datetime.strptime(year, '%Y'), Contest.date < datetime.datetime.strptime(str(int(year) + 1), '%Y')).first()
 
     contest.test_pieces = TestPiece.query.filter(TestPiece.contests.any(id=contest.id)).all()
@@ -115,21 +113,18 @@ def get_contest_detail(contest_type_id, area_id, band_type, category, year):
     contest_name = contest.get_fullname(area=False, category=False, band_type=False)
     contest_area = contest.get_fullname(prefix=False, ctype=False)
 
-    breadcrumb = dict()
-    breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
-    breadcrumb['parent'].append({'name': '比賽'})
-    breadcrumb['parent'].append({'path': '/contest/moe/', 'name': '學生音樂比賽'})
-    breadcrumb['parent'].append({'path': '/contest/moe/%s' % contest_type_id, 'name': contest.get_fullname(prefix=False, area=False, category=False, band_type=False)})
-    breadcrumb['parent'].append({'path': '/contest/moe/%s/%s/%s/%s' % (contest_type_id, area_id, band_type, category), 'name': contest_area})
-    breadcrumb['current'] = {'name': year}
+    breadcrumb = [
+        {'path': '/', 'name': '首頁'},
+        {'name': '比賽'},
+        {'path': '/contest/moe/', 'name': '學生音樂比賽'},
+        {'path': '/contest/moe/%s' % contest_type_id, 'name': contest.get_fullname(prefix=False, area=False, category=False, band_type=False)},
+        {'path': '/contest/moe/%s/%s/%s/%s' % (contest_type_id, area_id, band_type, category), 'name': contest_area},
+        {'name': year}
+    ]
 
-    search_fields = []
-    shortcut_options = []
     search_hint = ''
     return render_template(
         'contest-detail.html',
-        search_fields=search_fields,
-        shortcut_options=shortcut_options,
         search_hint=search_hint,
         ascending=True,
         sortme=0,

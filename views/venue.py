@@ -1,3 +1,5 @@
+from typing import List, Tuple, Optional
+
 from flask import Blueprint, render_template
 from models import Venue, Contest
 
@@ -5,17 +7,18 @@ VENUE_MOD = Blueprint('venue_mod', __name__)
 
 
 @VENUE_MOD.route('/')
-def all_venues():
-    breadcrumb = dict()
-    breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
-    breadcrumb['current'] = {'name': '場地'}
+def all_venues() -> str:
+    breadcrumb = [
+        {'path': '/', 'name': '首頁'},
+        {'name': '場地'}
+    ]
 
     venues = Venue.query.all()
     for venue in venues:
         venue.contest_count = Contest.query.filter_by(venue_id=venue.id).count()
 
     search_fields = ['venue-name', 'venue-location']
-    shortcut_options = []  # ['北區', '中區', '南區', '海外']
+    shortcut_options: List[str] = []  # ['北區', '中區', '南區', '海外']
     search_hint = '場地名稱 / 城市'
     return render_template(
         'venues.html',
@@ -28,7 +31,7 @@ def all_venues():
 
 
 @VENUE_MOD.route('/<venue_id>')
-def get_venue_detail(venue_id):
+def get_venue_detail(venue_id: str) -> Tuple[str, Optional[int]]:
     if not venue_id.isdigit():
         return render_template(
             'error.html',
@@ -38,10 +41,11 @@ def get_venue_detail(venue_id):
     venue = Venue.query.filter_by(id=venue_id).first()
     contest_record = Contest.query.filter_by(venue_id=venue_id).all()
 
-    breadcrumb = dict()
-    breadcrumb['parent'] = [{'path': '/', 'name': '首頁'}]
-    breadcrumb['parent'].append({'path': '/venue/', 'name': '場地'})
-    breadcrumb['current'] = {'name': venue.name}
+    breadcrumb = [
+        {'path': '/', 'name': '首頁'},
+        {'path': '/venue/', 'name': '場地'},
+        {'name': venue.name}
+    ]
 
     return render_template(
         'venue.html',
